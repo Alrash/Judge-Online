@@ -32,3 +32,11 @@ everyone:
 > 7. chatroom of one problem
 > 8. knowledge
 > 9. the others
+
+
+##用户提交后需记录的信息
+> 1. who
+> 2. which problem
+> 3. status of this problem
+> 3.1. For problem of database, write down 5 status or two status which is true or false and total count pluses 1.
+> 3.2. For user, record the detail of this submit, including status, goal of each test and tid(test or submit id).
