@@ -20,3 +20,15 @@ everyone:
 > 1. 对于上传题目的通过与否，删除、忽略题目(已有、未有)
 > 2. 管理聊天室、在线阅读(版本还原)
 > 3. 导入信息，从execl里
+
+
+##需求页面
+> 1. index
+> 2. Sign in and Register(one or two)
+> 3. show problem
+> 4. search
+> 5. information(including submitions)
+> 6. show details of one submition
+> 7. chatroom of one problem
+> 8. knowledge
+> 9. the others
