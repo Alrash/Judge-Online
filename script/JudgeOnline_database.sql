@@ -12,8 +12,11 @@ use `JudgeOnline`;
  * passwd 使用php的第三方phpass库，暂时使用默认方法加密，长度大小为60
  * Note 个人简介
  * Email 个人邮箱，并建立唯一索引
- * truth -- 邮箱验证
+ * Trust -- 用户权限 0:只是一般用户 10:超级管理员 中间值:拥有编写权限
  * Nickname与Email可做登录使用，UId不能
+ * Status -- 邮箱是否激活(为什么用tinyint而不用enum，只因看了一下enum，感觉太坑)
+ * Extra -- 保留
+ * Status与Extra暂时无用
  */
 create table `UserInfo`
 (
@@ -23,15 +26,20 @@ create table `UserInfo`
     `Email`       varchar(30)     not null,
     `Image`       varchar(100)    not null default "/images/default_image.jpg",
     `Note`        nvarchar(200)   null,
-    `Truth`       tinyint         not null default 0,
+    `Trust`       tinyint         not null default 0,
+    `Status`      tinyint         not null default 0,
+    `Extra`       varchar(200)    null,
     primary key (`UId`),
     unique index `nickname_Unique` (`Nickname` asc),
     unique index `email_Unique` (`Email` asc)
+    check (`Trust` >= 0 and `Trust` <= 10)
+    check (`Status` == 0 or `Status` == 1)
 );
 
 /*
  * 记录可能经常修改的字段
  * 部分字段解释
+ * Exp -- 经验值，用于计算等级
  * AC -- accepted, 完全正确
  * WA -- wrong answer，答案完全错误
  * PE -- presentation, 答案对，但格式错误
@@ -44,6 +52,7 @@ create table `UserInfo`
 create table `UserStatistics`
 (
     `UId`         bigint        unsigned not null,
+    `Exp`         bigint        unsigned not null default 0,
     `AC`          bigint        unsigned default 0,
     `WA`          bigint        unsigned default 0,
     `PE`          bigint        unsigned default 0,
@@ -68,7 +77,7 @@ create table `UserStatistics`
  */
 create table `ProblemInfo`
 (
-    `PId`         bigint        unsigned not null auto_increment,
+    `PId`         int           unsigned not null auto_increment,
     `Title`       nvarchar(31)  not null,
     `Time`        char(5)       not null,
     `Memory`      char(5)       not null,
@@ -86,7 +95,7 @@ create table `ProblemInfo`
  */
 create table `ProblemStatistics`
 (
-    `PId`         bigint        unsigned not null,
+    `PId`         int           unsigned not null,
     `Right`       bigint        unsigned default 0,
     `Wrong`       bigint        unsigned default 0,
     foreign key (`PId`) references ProblemInfo(`PId`) on delete cascade
@@ -103,7 +112,7 @@ create table `Submission`
 (
     `SId`         bigint        unsigned not null auto_increment,
     `UId`         bigint        unsigned not null,
-    `PId`         bigint        unsigned not null,
+    `PId`         int           unsigned not null,
     `goal`        decimal(5,2)  not null default 0,
     primary key (`SId`),
     foreign key (`UId`) references UserInfo(`UId`),
@@ -140,6 +149,7 @@ create table `TempProblem`
  * UserInfo 插入、删除时，对UserStatistics的操作
  * ProblemInfo 插入、删除时，对ProblemStatistics的操作
  * submission check约束goal
+ * UserInfo 约束UId = 1的超级管理员，不能删，Trust不能改，其余Trust在0～10之间
  */
 delimiter $$
 
@@ -154,11 +164,37 @@ end$$
 
 /*
  * 当删除某个用户时，先删除其状态表中的内容
+ * 当该用户为super user时，抛出异常
  */
 create trigger `User_Delete_Tri` before delete on `UserInfo`
 for each row
 begin
+    if old.`UId` = 1
+    then
+        set msg = "禁止删除超级管理员用户!\nForbid deleting the super user!";
+        signal SQLSTATE 'HY0000' set message_txt = msg;
+    end if;
     delete from `UserStatistics` where `UserStatistics`.`UId` = old.`UId`;
+end$$
+
+/*
+ * 限制trust在0到10之间，其中Uid为1的用户不可更改
+ */
+create trigger `User_Update_On_Trust_Tri` before insert update on `UserInfo`
+for each row
+begin
+    if (new.`UId` == 1)
+    then
+        set new.`Trust` = 10;
+    elseif ((new.`Trust` > 10) or (new.`Trust` < 0))
+    then
+        set new.`Trust` = 0;
+    end if;
+
+    if ((new.`Status` != 0 ) or (new.`Status` != 1))
+    then
+        set new.`Status` = 0;
+    end if;
 end$$
 
 /*
@@ -180,9 +216,10 @@ begin
 end$$
 
 /*
- * 当插入Submission时，若得分不在0～100之间，将其置为-1,表示需重新检查一遍
+ * 当插入或更新Submission时，若得分不在0～100之间，将其置为-1,表示需重新检查一遍
+ * 更新的情况只有当goal为-1时，进允许更新这一列
  */
-create trigger `Submission_Check_Tri` before insert on `Submission`
+create trigger `Submission_Check_Tri` before insert update on `Submission`
 for each row
 begin
     if ((new.`goal` > 100.0) or (new.`goal` < 0.0))
