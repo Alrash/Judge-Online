@@ -31,9 +31,9 @@ create table `UserInfo`
     `Extra`       varchar(200)    null,
     primary key (`UId`),
     unique index `nickname_Unique` (`Nickname` asc),
-    unique index `email_Unique` (`Email` asc)
-    check (`Trust` >= 0 and `Trust` <= 10)
-    check (`Status` == 0 or `Status` == 1)
+    unique index `email_Unique` (`Email` asc),
+    check (`Trust` >= 0 and `Trust` <= 10),
+    check (`Status` = 0 or `Status` = 1)
 );
 
 /*
@@ -159,6 +159,11 @@ delimiter $$
 create trigger `User_Insert_Tri` after insert on `UserInfo`
 for each row
 begin
+    if ((new.`Status` != 0 ) or (new.`Status` != 1))
+    then
+        update `UserInfo` set `Status` = 0 where `UId` = new.`UId`;
+    end if;
+
     insert into UserStatistics (`UId`) values(new.`UId`);
 end$$
 
@@ -169,21 +174,23 @@ end$$
 create trigger `User_Delete_Tri` before delete on `UserInfo`
 for each row
 begin
+    declare msg varchar(200);
     if old.`UId` = 1
     then
         set msg = "禁止删除超级管理员用户!\nForbid deleting the super user!";
-        signal SQLSTATE 'HY0000' set message_txt = msg;
+        signal SQLSTATE 'HY000' set message_text = msg;
     end if;
+
     delete from `UserStatistics` where `UserStatistics`.`UId` = old.`UId`;
 end$$
 
 /*
  * 限制trust在0到10之间，其中Uid为1的用户不可更改
  */
-create trigger `User_Update_On_Trust_Tri` before insert update on `UserInfo`
+create trigger `User_Update_On_Trust_Tri` before update on `UserInfo`
 for each row
 begin
-    if (new.`UId` == 1)
+    if (new.`UId` = 1)
     then
         set new.`Trust` = 10;
     elseif ((new.`Trust` > 10) or (new.`Trust` < 0))
@@ -218,8 +225,17 @@ end$$
 /*
  * 当插入或更新Submission时，若得分不在0～100之间，将其置为-1,表示需重新检查一遍
  * 更新的情况只有当goal为-1时，进允许更新这一列
+ * 不能写成insert or update，神奇的报错-_-|||
  */
-create trigger `Submission_Check_Tri` before insert update on `Submission`
+create trigger `Submission_Check_Insert_Tri` before insert on `Submission`
+for each row
+begin
+    if ((new.`goal` > 100.0) or (new.`goal` < 0.0))
+    then
+        set new.`goal` = -1;
+    end if;
+end$$
+create trigger `Submission_Check_Update_Tri` before update on `Submission`
 for each row
 begin
     if ((new.`goal` > 100.0) or (new.`goal` < 0.0))
