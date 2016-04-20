@@ -198,7 +198,7 @@ begin
         set new.`Trust` = 0;
     end if;
 
-    if ((new.`Status` != 0 ) or (new.`Status` != 1))
+    if ((new.`Status` != 0 ) and (new.`Status` != 1))
     then
         set new.`Status` = 0;
     end if;
@@ -246,7 +246,8 @@ end$$
 
 delimiter ;
 
-insert into `UserInfo`(`Nickname`, `Passwd`, `Email`, `Image`, `Note`, `Trust`, `Status`) values('JudgeOnline', '$2a$08$vh/od2dwgRU4wmDAWFAr.epPeVHp3FbMXOw4VW3ye3iti9xeiE.IC', 'null', '/images/default_image.jpg', 'Administrator', 10, 0);
+/*插入超级管理员，昵称为JudgeOnline，密码为JudgeOnline，注意大小写*/
+insert into `UserInfo`(`Nickname`, `Passwd`, `Email`, `Image`, `Note`, `Trust`, `Status`) values('JudgeOnline', '$2a$08$vh/od2dwgRU4wmDAWFAr.epPeVHp3FbMXOw4VW3ye3iti9xeiE.IC', 'null', '/images/default_image.jpg', 'Super Administrator', 10, 0);
 
 /*创建视图*/
 create view `Submission_View`
