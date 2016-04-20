@@ -52,19 +52,19 @@ create table `UserInfo`
 create table `UserStatistics`
 (
     `UId`         bigint        unsigned not null,
-    `Exp`         bigint        unsigned not null default 0,
-    `AC`          bigint        unsigned default 0,
-    `WA`          bigint        unsigned default 0,
-    `PE`          bigint        unsigned default 0,
-    `RE`          bigint        unsigned default 0,
-    `TLE`         bigint        unsigned default 0,
-    `MLE`         bigint        unsigned default 0,
-    `OLE`         bigint        unsigned default 0,
-    `CE`          bigint        unsigned default 0,
-    `C`           bigint        unsigned default 0,
-    `C++`         bigint        unsigned default 0,
-    `Java`        bigint        unsigned default 0,
-    `Python`      bigint        unsigned default 0,
+    `Exp`         int	        unsigned not null default 0,
+    `AC`          int   	unsigned default 0,
+    `WA`          int        	unsigned default 0,
+    `PE`          int   	unsigned default 0,
+    `RE`          int	        unsigned default 0,
+    `TLE`         int	        unsigned default 0,
+    `MLE`         int	        unsigned default 0,
+    `OLE`         int	        unsigned default 0,
+    `CE`          int	        unsigned default 0,
+    `C`           int	        unsigned default 0,
+    `C++`         int	        unsigned default 0,
+    `Java`        int	        unsigned default 0,
+    `Python`      int	        unsigned default 0,
     foreign key (`UId`) references UserInfo(`UId`) on delete cascade
 );
 
@@ -159,7 +159,7 @@ delimiter $$
 create trigger `User_Insert_Tri` after insert on `UserInfo`
 for each row
 begin
-    if ((new.`Status` != 0 ) or (new.`Status` != 1))
+    if ((new.`Status` != 0 ) and (new.`Status` != 1))
     then
         update `UserInfo` set `Status` = 0 where `UId` = new.`UId`;
     end if;
@@ -245,6 +245,8 @@ begin
 end$$
 
 delimiter ;
+
+insert into `UserInfo`(`Nickname`, `Passwd`, `Email`, `Image`, `Note`, `Trust`, `Status`) values('JudgeOnline', '$2a$08$vh/od2dwgRU4wmDAWFAr.epPeVHp3FbMXOw4VW3ye3iti9xeiE.IC', 'null', '/images/default_image.jpg', 'Administrator', 10, 0);
 
 /*创建视图*/
 create view `Submission_View`
