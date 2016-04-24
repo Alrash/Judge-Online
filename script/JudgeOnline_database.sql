@@ -2,6 +2,10 @@
  * 此处有一个问题：auto_increment在insert错误的时候，再次插入时，记录值会多增加1
  * 例：表里id为1,插入错误1次后，再次插入，成功，这时id为3，而非2；插入错误5次后，成功插入，id为9
  */
+
+create user 'JudgeOnline' identified by 'judgement';
+grant select, update, delete on JudgeOnline.* to 'JudgeOnline'@'%' identified by 'judgement';
+
 create database `JudgeOnline`;
 
 use `JudgeOnline`;
