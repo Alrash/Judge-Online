@@ -254,6 +254,22 @@ delimiter ;
 insert into `UserInfo`(`Nickname`, `Passwd`, `Email`, `Image`, `Note`, `Trust`, `Status`) values('JudgeOnline', '$2a$08$vh/od2dwgRU4wmDAWFAr.epPeVHp3FbMXOw4VW3ye3iti9xeiE.IC', 'null', '/images/default_image.jpg', 'Super Administrator', 10, 0);
 
 /*创建视图*/
+/**
+ * 用户信息视图
+ * 含以下字段：用户UId、昵称、邮箱、头像、简介、用户权限、经验值、
+ *             正确题数、总题数、各语言提交数
+ */
+create view `User_View`
+as
+    select
+        `UserInfo`.`UId`, `UserInfo`.`Nickname`, `UserInfo`.`Email`,
+        `UserInfo`.`Image`, `UserInfo`.`Note`, `UserInfo`.`Trust`,
+        `UserStatistics`.`Exp`, `UserStatistics`.`AC` as `Right`,
+        `UserStatistics`.`AC` + `UserStatistics`.`WA` +`UserStatistics`.`PE` +`UserStatistics`.`RE` +`UserStatistics`.`TLE` +`UserStatistics`.`MLE` +`UserStatistics`.`OLE` +`UserStatistics`.`CE` as `Total`, `UserStatistics`.`C`, `UserStatistics`.`C++`, `UserStatistics`.`Java`, `UserStatistics`.`Python` 
+    from `UserInfo` inner join  `UserStatistics`
+         on `UserInfo`.`UId` = `UserStatistics`.`UId`;
+
+/*提交信息视图*/
 create view `Submission_View`
 as 
     select
