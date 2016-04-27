@@ -265,7 +265,8 @@ as
         `UserInfo`.`UId`, `UserInfo`.`Nickname`, `UserInfo`.`Email`,
         `UserInfo`.`Image`, `UserInfo`.`Note`, `UserInfo`.`Trust`,
         `UserStatistics`.`Exp`, `UserStatistics`.`AC` as `Right`,
-        `UserStatistics`.`AC` + `UserStatistics`.`WA` +`UserStatistics`.`PE` +`UserStatistics`.`RE` +`UserStatistics`.`TLE` +`UserStatistics`.`MLE` +`UserStatistics`.`OLE` +`UserStatistics`.`CE` as `Total`, `UserStatistics`.`C`, `UserStatistics`.`C++`, `UserStatistics`.`Java`, `UserStatistics`.`Python` 
+        `UserStatistics`.`AC` + `UserStatistics`.`WA` +`UserStatistics`.`PE` +`UserStatistics`.`RE` +`UserStatistics`.`TLE` +`UserStatistics`.`MLE` +`UserStatistics`.`OLE` +`UserStatistics`.`CE` as `Total`, 
+        `UserStatistics`.`C`, `UserStatistics`.`C++`, `UserStatistics`.`Java`, `UserStatistics`.`Python` 
     from `UserInfo` inner join  `UserStatistics`
          on `UserInfo`.`UId` = `UserStatistics`.`UId`;
 
