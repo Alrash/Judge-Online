@@ -28,7 +28,7 @@ create table `UserInfo`
     `Nickname`    nvarchar(20)    not null,
     `Passwd`      char(60)        not null,
     `Email`       varchar(30)     not null,
-    `Image`       varchar(100)    not null default "/images/default_image.jpg",
+    `Image`       varchar(100)    not null default "/static/images/default_image.jpg",
     `Note`        nvarchar(200)   null,
     `Trust`       tinyint         not null default 0,
     `Status`      tinyint         not null default 0,
