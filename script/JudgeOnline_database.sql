@@ -28,7 +28,7 @@ create table `UserInfo`
     `Nickname`    nvarchar(20)    not null,
     `Passwd`      char(60)        not null,
     `Email`       varchar(30)     not null,
-    `Image`       varchar(100)    not null default "/static/images/default_image.jpg",
+    `Image`       varchar(100)    not null default "/img/default_image.jpg",
     `Note`        nvarchar(200)   null,
     `Trust`       tinyint         not null default 0,
     `Status`      tinyint         not null default 0,
@@ -251,7 +251,7 @@ end$$
 delimiter ;
 
 /*插入超级管理员，昵称为JudgeOnline，密码为JudgeOnline，注意大小写*/
-insert into `UserInfo`(`Nickname`, `Passwd`, `Email`, `Image`, `Note`, `Trust`, `Status`) values('JudgeOnline', '$2a$08$vh/od2dwgRU4wmDAWFAr.epPeVHp3FbMXOw4VW3ye3iti9xeiE.IC', 'null', '/images/default_image.jpg', 'Super Administrator', 10, 0);
+insert into `UserInfo`(`Nickname`, `Passwd`, `Email`, `Image`, `Note`, `Trust`, `Status`) values('JudgeOnline', '$2a$08$vh/od2dwgRU4wmDAWFAr.epPeVHp3FbMXOw4VW3ye3iti9xeiE.IC', 'null', '/img/default_image.jpg', 'Super Administrator', 10, 0);
 
 /*创建视图*/
 /**
