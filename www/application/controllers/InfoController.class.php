@@ -84,7 +84,7 @@ class InfoController extends Controller
     /**
      * 注册方法/函数
      */
-    function addNewUser()
+    function register()
     {
         $email = $_POST['email'];
         $nickname = $_POST['nickname'];

@@ -7,13 +7,13 @@ class InfoModel extends Model
 {
     function checkNickname($nickname)
     {
-        $response = $this->select(array("Nickname"), "UserInfo",  "`Nickname` = " . addQuotes($nickname));
+        $response = $this->selectArray($this->createSelectSql(array("Nickname"), "UserInfo",  "`Nickname` = " . addQuotes($nickname)));
         return $this->dealCheckResponse($response);
     }
     
     function checkEmail($email)
     {
-        $response = $this->select(array("Email"), "UserInfo",  "`Email` = " . addQuotes($email));
+        $response = $this->selectArray($this->createSelectSql(array("Email"), "UserInfo",  "`Email` = " . addQuotes($email)));
         return $this->dealCheckResponse($response);
     }
     
@@ -36,11 +36,11 @@ class InfoModel extends Model
     
     function addNewUser($columnvalue = array())
     {
-        return $this->insert('UserInfo', $columnvalue);
+        return $this->insert($this->createInsertSql('UserInfo', $columnvalue));
     }
     
     function getValues($column = array(), $table, $where)
     {
-        return $this->select($column, $table, $where);
+        return $this->selectArray($this->createSelectsql($column, $table, $where));
     }
 }

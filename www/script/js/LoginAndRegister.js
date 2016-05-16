@@ -272,7 +272,7 @@ $(document).ready(function() {
             $.ajax({
                 async: true,
                 type: "post",
-                url: "/info/addNewUser",
+                url: "/info/register",
                 data: {
                     nickname:nickname,
                     email:email,
