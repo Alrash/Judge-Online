@@ -61,8 +61,8 @@ class AboutController extends Controller
         $floor = $xml->floor;
         $info = array();
         //设置游客情况
-        array_push($userInfo, array('0' => array('UId' => '0', 'Nickname' => 'visitor',
-						'Image' => '/img/default_image.jpg', 'Exp' => 0, 'Trust' => 0)));
+        $userInfo['0'] = array('UId' => '0', 'Nickname' => 'visitor',
+						'Image' => '/img/default_image.jpg', 'Exp' => 0, 'Trust' => 0);
         
         //组合字符串
 		foreach ($floor as $Key => $item)
@@ -94,7 +94,7 @@ class AboutController extends Controller
         }
 
         //获得UId值作为索引的数组，便于下面的函数替换
-        $needData = $operation->selectReturnSpecialIndex(array('`UId`', '`Nickname`', '`Image`', '`Exp`', '`Trust`'),
+        $needData = $operation->getIdInfo(array('`UId`', '`Nickname`', '`Image`', '`Exp`', '`Trust`'),
                         '`User_View`', $this->getSuggestSelectWhere($operation->getXmlElement()));
         $this->set('data', $this->dealSuggestArray($operation->getXmlElement(), $needData));
     }

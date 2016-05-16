@@ -49,8 +49,8 @@ class AboutModel extends Model
         $this->saveXml();
     }
     
-    function getIdInfo($column = array(), $where)
+    function getIdInfo($column = array(), $table, $where)
     {
-        return $this->selectReturnSpecialIndex($column, '`UserInfo`', $where);
+        return $this->selectArraySpecialIndex($this->createSelectSql($column, $table, $where), 'UId');
     }
 }
