@@ -1,0 +1,439 @@
+/***************全局*********************/
+input:focus
+{
+    background-color: #e0e0e0;
+}
+
+body{
+    margin: 0;
+    min-width: 1300px;
+}
+
+/**************UserMenu**************/
+.usermenu{
+    z-index: 1000;
+    height: 40px;
+}
+
+.usermenu #info{
+    /*position: absolute;
+    margin-left: 50%;
+    text-align: center;*/
+    display: block;
+    width: 20%;
+    margin-right: 10%;
+    float: right;
+}
+
+.usermenu ul{
+    display: inline-block;
+    list-style-type: none;
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 0;
+}
+
+.usermenu li{
+    display: inline-block;
+    position: relative;
+    padding: 10px 4px;
+}
+
+.usermenu li#split{
+    font-size: 24px;
+    padding: 8px 0 0;
+}
+
+.usermenu #info .login #img{
+    padding: 1px 0 0;
+    display: inline-block;
+    position: absolute;
+}
+
+.usermenu #info .login #img_over{
+    padding: 1px 0 0;
+    display: inline-block;
+    position: absolute;
+    left: -12px;
+    top: 10px;
+}
+
+.usermenu #info .login #i_face{z-index: 100;}
+
+/*css3 border-radius通用*/
+.usermenu #info .login img{
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+/*    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;*/
+    border: 1px solid #ffffff;
+}
+
+.usermenu #info .login img#over{
+    height: 64px;
+    width: 64px;
+    transition: .1s;
+    border-radius: 50%;
+    /*    -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;*/
+    border: 2px solid #ffffff;
+}
+
+/*下拉列表*/
+.usermenu #info .login #img #dropdown{
+    display: none;
+}
+
+.usermenu #info .login #img_over #dropdown{
+    text-align: center;
+    position: absolute;
+    left: -80px;
+    background: #ffffff;
+    box-shadow:rgba(0,0,0,0.16) 0 2px 4px ;
+    border-radius: 0 0 4px 4px;
+    z-index: 10;
+    width: 220px;
+    padding: 40px 0 10px 0;
+    text-align: center;
+    top:30px;
+}
+
+.usermenu #info .login #img_over #dropdown #name{
+    margin: 0 0 5px 0;
+}
+
+.usermenu #info .login #img_over #dropdown li{
+    font-size: 12px;
+    padding: 4px;
+}
+
+/*****剩余菜单*****/
+.usermenu #info .login #leftmenu{
+    display: inline-block;
+    margin: 0 10px;
+    position: relative;
+    float: left;
+    left: 15%;
+}
+
+.usermenu #info .login #leftmenu li {
+    float: left;
+    margin: 4px 2px;
+}
+
+.usermenu #info .login{
+    /*display: block;*/
+    width: 100%;
+}
+
+.usermenu #info .logout{
+    /*display: none;*/
+    width: 100%;
+    position: relative;
+    top: -4px;
+}
+
+.usermenu a{
+    font-size: 18px;
+    text-decoration: none;
+    color: #222;
+}
+
+.usermenu #info .login a{
+    display: block;
+    font-size: 14px;
+    /*color: #222;*/
+}
+/*
+.usermenu #info .login #img a{
+    width: 36px;
+    height: 36px;
+}*/
+
+/**************顶层菜单栏底色****************/
+.usermenu_background {
+    height: 40px;
+    background: #BFBABA;
+    box-shadow: 0 0 0 2px;
+    overflow: hidden;
+    -webkit-filter: blur(20px) opacity(0.5);
+    filter: blur(20px) opacity(0.5);
+    -moz-filter: blur(20px) opacity(0.5);
+    z-index: -1;
+    position: absolute;
+    width: 100%;
+    min-width: 1300px;
+}
+
+/**************header****************/
+.header{
+    height: 100px;
+    text-align: center;
+    background: transparent url("./images/logo.png") no-repeat;
+}
+
+.header a/*:link, .header a:hover, .header a:visited*/ {
+    display: block;
+    height: 100px;
+    width: 568px;
+    position: relative;
+    left: 7%;
+/*    background: transparent url("./images/logo.png") 20px 600px no-repeat;*/
+}
+
+/**************navigation******************/
+div.navigation{
+    height: 3em;
+    position: static;
+    margin: 0 8% 6px;
+    text-align: center;
+}
+
+.navigation ul{
+    position: relative;
+    display: inline-block;
+    list-style-type: none;
+    margin: 0px 0px;
+    padding: 0px 0px;
+    width: 100%;
+}
+
+.navigation li {
+    text-align: center;
+    padding: 0.2em 0;
+    background-color: lightgray;
+    border-right: 0px solid white;
+    position: relative;
+    display: inline-block;
+}
+
+.navigation a{
+    font-size: 2em;
+    color:white;
+    text-decoration: none;
+    display: block;
+}
+
+#Index {width: 20%;}
+#Browse {width: 28%;}
+#Recommend {width: 18%;}
+#Data {width: 12%;}
+#Help {width: 12%;}
+
+.navigation li:hover {background-color: deepskyblue}
+
+body.index #Index, body.browse #Browse, body.recommend #Recommend, body.data #Data, body.help #Help{
+    background-color: cornflowerblue;
+}
+
+/**********Register and Login**********/
+.register, .login{
+    margin: 0 auto;
+    width: 35%;
+    position: relative;
+}
+
+.register .area_reg, .login .area_log{
+    margin-top: 20px;
+    margin-bottom: 96px;
+    padding: 10px;
+}
+
+.register .area_reg .area, .login .area_log .area {margin-bottom: 18px;}
+
+.register h3, .login h3{
+    margin: 0.5em auto;
+    left: -5%;
+    position: relative;
+    font-size: 20px;
+    text-align: center;
+}
+
+.register .area_reg .area input, .login .area_log .area input{
+    font-size: 1.2em;
+    box-sizing: border-box;
+    width: 95%;
+    height: 2em;
+    padding: 4px 10px;
+}
+
+.register .area_reg .area span, .login .area_log .area span{
+    color: red;
+    font-size: 0.8em;
+}
+
+.register .area_reg .area_reg_sub, .login .area_log .area_log_sub {
+    width: 95%;
+    display: inline-block;
+}
+
+.area_reg_sub #submit, .area_log_sub #login{
+    background: #67bdcd;
+    text-decoration: none;
+    text-align: center;
+    width: 75%;
+    height: 2.2em;
+    line-height: 2.2em;
+    color: white;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 0 0;
+/*    cursor: pointer;*/
+}
+
+.area_log_sub .login_a, .area_log_sub .area_log_sub_a{
+    /*margin: 0px 0px 10px 0px;*/
+    display: inline-block;
+}
+
+.area_log .login_a{
+    width: 30%;
+}
+
+.area_log_sub_a{
+    width: 65%;
+}
+
+.area_log_sub_a #login{
+    width: 100%;
+}
+
+.area_reg_sub #submit:hover, .area_log_sub #login:hover{
+    cursor: pointer;
+    background-color: cornflowerblue;
+}
+
+.area_reg_sub #sigin{
+    display: inline-block;
+    width: 20%;
+    font-size: 14px;
+    height: 2.2em;
+    margin: 0 0 0 1%;
+    text-align: right;
+    text-decoration: none;
+}
+
+.area_log .login_other{
+    text-align: center;
+    margin: 15px auto;
+    width: 95%;
+    display: inline-block;
+}
+
+.area_log .login_other .login_other_half{
+    width: 48%;
+    display: inline-block;
+}
+
+.area_log .login_other a{
+    font-size: 0.8em;
+    text-decoration: none;
+}
+
+/*
+.area_reg_sub span, .area_log_sub span{
+    visibility: hidden;
+}*/
+
+.area_log_sub div#refresh, .area_reg_sub div#refresh{
+    display:none;
+}
+
+/*************注册成功***************/
+.area_reg .success{
+    text-align: center;
+    visibility: hidden;
+}
+
+.area_reg .success p{
+    font-size: 1.2em;
+}
+
+.area_reg .success a{
+    color: green;
+}
+
+
+/*******************body**********************/
+/****index****/
+.search{
+    margin: 5% 28%;
+}
+
+#search{
+    width: 70%;
+    height: 36px;
+    padding-left: 30px;
+    font-size: 20px;
+    background-color: white;
+}
+
+#isearch{
+    width: 24px;
+    height: 24px;
+    background: url("./images/base-function.png") no-repeat 0px 0px;
+    position: absolute;
+    margin: 6px 4px;
+}
+
+#bsearch{
+    width: 10%;
+    height: 36px;
+    position: absolute;
+    margin: 0px 6px;
+    font-size: 1.2em;
+}
+
+/****************About******************/
+.about{
+    padding: 4px 2%;
+    background-color: beige;
+    min-height: 470px;
+    display: block;
+}
+
+.about .left_area{
+    display: inline-block;
+    padding: 8px 0 8px 2px;
+    width: 8%;
+    position: fixed;
+    border-top: 2px solid lightgray;
+    border-bottom: 2px solid lightgray;
+}
+
+.about .left_area ul{
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 0 2%;
+}
+
+.about .left_area ul li{
+    padding: 2px 0;
+}
+
+.about .left_area ul li a{
+    text-decoration: none;
+}
+
+.about .right_area{
+    background-color: beige;
+    display: inline-block;
+    position: relative;
+    width: 85%;
+    padding: 1em 1em;
+    border-left: 2px solid #A2B5CD;
+    min-height: 442px;
+    left: 10%;
+}
+
+.about .right_area #suggest textarea{
+    min-width: 360px;
+    width: 50%;
+}
+
+.about .right_area #suggest input{
+/*    font-size: 1.2em;*/
+    width: 6em;
+}
