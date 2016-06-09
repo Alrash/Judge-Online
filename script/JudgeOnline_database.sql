@@ -57,9 +57,9 @@ create table `UserStatistics`
 (
     `UId`         bigint        unsigned not null,
     `Exp`         int	        unsigned not null default 0,
-    `AC`          int   	unsigned default 0,
+    `AC`          int       	unsigned default 0,
     `WA`          int        	unsigned default 0,
-    `PE`          int   	unsigned default 0,
+    `PE`          int   	    unsigned default 0,
     `RE`          int	        unsigned default 0,
     `TLE`         int	        unsigned default 0,
     `MLE`         int	        unsigned default 0,
@@ -74,6 +74,8 @@ create table `UserStatistics`
 
 /*
  * 存放问题信息
+ * hard -- 问题难度，范围1～5
+ * TestNumber -- 测试用例的数目
  * time -- 以C为标准的限制时间，例：1.00s
  * memory -- 同样以C为标准的内存限制，例：254M
  * note -- 存放原题、原作者信息(url or author)
@@ -85,13 +87,16 @@ create table `ProblemInfo`
     `Title`       nvarchar(31)  not null,
     `Time`        char(5)       not null,
     `Memory`      char(5)       not null,
+    `Hard`        int           not null default 3,
+    `TestNumber`  int           not null default 10,
     `Note`        varchar(51)   not null,
     `Label1`      nvarchar(21)  null,
     `Label2`      nvarchar(21)  null,
     `Label3`      nvarchar(21)  null,
     `Label4`      nvarchar(21)  null,
     `Label5`      nvarchar(21)  null,
-    primary key (`PId`)
+    primary key (`PId`),
+    check (`Hard` >= 1 and `Hard` <= 5)
 );
 
 /*
@@ -138,13 +143,16 @@ create table `TempProblem`
     `Title`       nvarchar(30)  not null,
     `Time`        char(5)       not null,
     `Memory`      char(5)       not null,
+    `Hard`        int           not null default 3,
+    `TestNumber`  int           not null default 10,
     `Note`        varchar(51)   not null,
     `Label1`      nvarchar(21)  null,
     `Label2`      nvarchar(21)  null,
     `Label3`      nvarchar(21)  null,
     `Label4`      nvarchar(21)  null,
     `Label5`      nvarchar(21)  null,
-    primary key (`TPId`)
+    primary key (`TPId`),
+    check (`Hard` >= 1 and `Hard` <= 5)
 );
 
 /*
@@ -214,6 +222,11 @@ end$$
 create trigger `Problem_Insert_Tri` after insert on `ProblemInfo`
 for each row
 begin
+    if ((new.`Hard` < 1) or (new.`Hard` > 5))
+    then
+        update `ProblemInfo` set `Hard` = 3 where `PId` = new.`PId`;
+    end if;
+
     insert into ProblemStatistics (`PId`) values(new.`PId`);
 end$$
 
@@ -224,6 +237,30 @@ create trigger `Problem_Delete_Tri` before delete on `ProblemInfo`
 for each row
 begin
     delete from `ProblemStatistics` where `ProblemStatistics`.`PId` = old.`PId`;
+end$$
+
+/* *
+ * 因为后写，使用两个而不是一个，请看下一条注释
+ * 目的：防止Hard值越界
+ * 为什么TempProblem表不使用？
+ *     1. ProblemInfo表的内容是从TempProblem表中插入的，insert规则可防止错误的发生
+ *     2. 懒Σ( ° △ °||| )︴！！！！！！！
+ */
+create trigger `ProblemInfo_Check_Insert_Tri` before insert on `ProblemInfo`
+for each row
+begin
+    if ((new.`Hard` > 5) or (new.`Hard` < 1))
+    then
+        set new.`Hard` = 3;
+    end if;
+end$$
+create trigger `ProblemInfo_Check_Update_Tri` before update on `ProblemInfo`
+for each row
+begin
+    if ((new.`Hard` > 5) or (new.`Hard` < 1))
+    then
+        set new.`Hard` = 3;
+    end if;
 end$$
 
 /*
