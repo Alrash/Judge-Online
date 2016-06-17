@@ -180,6 +180,8 @@ begin
 end$$
 
 /*
+ * 特别需求：
+ *     本触发器限制使用mysql，其余请修改
  * 当删除某个用户时，先删除其状态表中的内容
  * 当该用户为super user时，抛出异常
  */
@@ -190,7 +192,8 @@ begin
     if old.`UId` = 1
     then
         set msg = "禁止删除超级管理员用户!\nForbid deleting the super user!";
-        signal SQLSTATE 'HY000' set message_text = msg;
+        signal SQLSTATE 'HY000' set message_text = msg;     #version >= 5.5
+        #update nullTable set err = msg;                    #version < 5.5
     end if;
 
     delete from `UserStatistics` where `UserStatistics`.`UId` = old.`UId`;
