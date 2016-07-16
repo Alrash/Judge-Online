@@ -14,15 +14,9 @@
 #include <unistd.h>        //execl函数使用
 #include <vector>
 #include "../public/functions.h"
+#include "../public/config.h"
 
 using namespace std;
-
-//带编译文件的根目录
-//暂时手动设置绝对路径
-//Submit目录下设置内容：check -- 测试文件夹
-//                      d*（提交号）-- 存放提交文件，以及一些编译输出文件（如：警告、错误提示、分值结果）
-//const string root = "/www/DATA/Submit";
-const string root = "/home/alrash/Desktop/judge";
 
 //编译选项字符串
 //编译文件文件名统一改为Main.xxx，编译后可执行文件名为Main
@@ -47,7 +41,7 @@ const string java_sed_script  = "sed -re '/package.*/d;s/[ \t]*public[ \t]+class
 
 //删除c或cpp源文件中的包含sys/*或unistd.h的头文件
 //五个待填充的位置，前三个为待检查文件的绝对路径，后两个分别为root/check/Main.extension
-const string cpp_sed_script = "sed -re '/sys\\/.*/d;/unistd\\.h/d' %s/%d/%s > %s/check/Main.%s";
+const string cpp_sed_script = "sed -re '/sys\\/.*/d;/\/dev\/.*/d;/unistd\\.h/d' %s/%d/%s > %s/check/Main.%s";
 
 //python替换脚本
 const string python_sed_script = "sed -re '/import[ \t]*os/g' %s/%d/%s > %s/check/Main.py";
@@ -112,6 +106,7 @@ int init(){
 int compiler_function(){
     //使用子进程进行脚本替换处理
     //使用子进程的原因：使用execl后，执行的脚本会替换本进程的所有资源，之后的代码均不执行
+    //可以使用system(char *command)代替
     int pid = fork();
     if (pid == 0){
         //执行脚本

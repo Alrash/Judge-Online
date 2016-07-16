@@ -22,4 +22,15 @@
  */
 std::vector<std::string> split(const std::string &str, const std::string &pattern);
 
+/* *
+ * 字符串替换函数（全部）
+ * @param:
+ *      str -- 待替换字符串
+ *      substr -- 替换的关键字
+ *      repstr -- 将要替换的字符串
+ * @return:
+ *      返回已经替换好的字符串
+ */
+std::string replaceAll(const std::string &str, const std::string &substr, const std::string repstr);
+
 #endif

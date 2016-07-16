@@ -28,3 +28,15 @@ std::vector<std::string> split(const std::string &str, const std::string &patter
 
     return result;
 }
+
+//替换所有substr所指字符串
+std::string replaceAll(const std::string &str, const std::string &substr, const std::string repstr){
+    std::string result = str;
+    int len = substr.size(), pos;
+
+    while ((pos = result.find(substr)) != std::string::npos){
+        result.replace(pos, len, repstr);
+    }
+    
+    return result;
+}
