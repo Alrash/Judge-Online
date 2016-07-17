@@ -18,6 +18,7 @@
 #include <sys/resource.h>
 #include <sys/ptrace.h>
 #include <string.h>
+#include "check.h"
 #include "../public/config.h"
 #include "../public/functions.h"
 
@@ -172,6 +173,14 @@ int reopen(int num){
 }
 
 /* *
+ * 具体测评函数
+ * 使用fork，将待测评执行文件放入子进程，父进程监控
+ * 父进程使用ptrace监控子进程
+ * 获取内存的手段：
+ *     读取/proc/pidd/statm文件的第6个数据，再 * getpagesize() / 1024，得到单位为B的内存大小
+ * 获取内存的思路：
+ *     1. 在源文件中添加文件读取代码（缺点，程序必须执行完成，但是若要求不高，则可试一试）
+ *     2. 调试子进程，并不断读取文件
  */
 int executor_function(int num){
     int status, memory = 0, current_time, answer;
@@ -211,11 +220,34 @@ int executor_function(int num){
 
             //一些信号处理
             if (WIFEXITED(status)){
-            cout << WIFSTOPPED(status) << endl;
                 //program exit
                 if (WEXITSTATUS(status) == 0){
                     //exited normally
                     //虽然是正常退出，但是会存在AC WA PE三种情况
+                    //下次用switch吧-_-|||
+                    int ret = checkEachAnswer(num);
+                    if (ret == -1){
+                        answer = 100;
+                    } else if (ret == 0){
+                        //答案错
+                        answer = 1;
+                    } else {
+                        if (isFormat){
+                            ret = checkLineAnswer(num);
+                            if (ret == -1){
+                                //文件打开错误
+                                answer = 100;
+                            } else if (ret == 0){
+                                //格式不正确
+                                answer = 2;
+                            } else{
+                                //完全正确
+                                answer = 0;
+                            }
+                        }else{
+                            answer = 0;
+                        }
+                    }
                 } else{
                     //another problem
                     answer = 100;
