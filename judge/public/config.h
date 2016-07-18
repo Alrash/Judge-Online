@@ -19,4 +19,15 @@ const std::string root = "/home/alrash/Desktop/judge";
 const int MB = 1024 * 1024;						//1M
 const int max_outfile_size = MB;				//1M
 
+//测试结果常量字符串
+const int ANSWER_AC = 0;
+const int ANSWER_WA = 1;
+const int ANSWER_PE = 2;
+const int ANSWER_RE = 3;
+const int ANSWER_TLE = 4;
+const int ANSWER_MLE = 5;
+const int ANSWER_OLE = 6;
+const int ANSWER_CE = 7;
+const int ANSWER_OTHERS = 100;
+
 #endif

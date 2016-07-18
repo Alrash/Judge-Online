@@ -5,7 +5,7 @@
 	> Created Time: Thu 14 Jul 2016 11:00:25 PM CST
     > 三流检测，仅提供思路 orz
     > Functions: 执行已经编译好的代码，使用重定向保存文件，等待检测
-                 检测结果保存至result中，文件格式：？
+                 检测结果保存至result中，文件格式：是否正确 执行结果 执行时间 使用内存
  ************************************************************************/
 
 #include <iostream>
@@ -176,6 +176,9 @@ int reopen(int num){
  * 具体测评函数
  * 使用fork，将待测评执行文件放入子进程，父进程监控
  * 父进程使用ptrace监控子进程
+ * 判别结果：根据数据中的排列顺序(使用config.h文件中已定义的常量)
+ *     0-AC 1-WA 2-PE 3-RE 4-TLE 5-MLE 6-OLE 7-CE 100-others
+ * 执行结果转存至result中
  * 获取内存的手段：
  *     读取/proc/pidd/statm文件的第6个数据，再 * getpagesize() / 1024，得到单位为B的内存大小
  * 获取内存的思路：
@@ -227,30 +230,32 @@ int executor_function(int num){
                     //下次用switch吧-_-|||
                     int ret = checkEachAnswer(num);
                     if (ret == -1){
-                        answer = 100;
+                        answer = ANSWER_OTHERS;
                     } else if (ret == 0){
                         //答案错
-                        answer = 1;
+                        answer = ANSWER_WA;
                     } else {
                         if (isFormat){
                             ret = checkLineAnswer(num);
                             if (ret == -1){
                                 //文件打开错误
-                                answer = 100;
+                                answer = ANSWER_OTHERS;
                             } else if (ret == 0){
                                 //格式不正确
-                                answer = 2;
+                                answer = ANSWER_PE;
                             } else{
                                 //完全正确
-                                answer = 0;
+                                answer = ANSWER_AC;
+                                isRight = true;
                             }
                         }else{
-                            answer = 0;
+                            answer = ANSWER_AC;
+                            isRight = true;
                         }
                     }
                 } else{
                     //another problem
-                    answer = 100;
+                    answer = ANSWER_OTHERS;
                 }
 
                 break;
@@ -258,17 +263,17 @@ int executor_function(int num){
                 int signo = WTERMSIG(status);
                 if (signo == SIGKILL){
                     //over time
-                    answer = 4;
+                    answer = ANSWER_TLE;
                 } else if (signo == SIGABRT){
                     //下列几乎没有用
-                    answer = 100;
+                    answer = ANSWER_OTHERS;
                     //cout << "abort" << endl;
                 } else if (signo == SIGALRM){
-                    answer = 100;
+                    answer = ANSWER_OTHERS;
                     //cout << "alarm" << endl;
                 } else {
                     //可能是没输入文件的错误
-                    answer = 100;
+                    answer = ANSWER_OTHERS;
                     //cout << "other signal " << signo << endl;
                 }
 
@@ -290,31 +295,31 @@ int executor_function(int num){
                     }
                 } else if (signo == SIGXFSZ) {
                     //file size
-                    answer = 6;
+                    answer = ANSWER_OLE;
                     break;
                 } else if (signo == SIGSEGV) {
                     //虽然给了错误5，但是运行时似乎是抛出SIG_ABRT
-                    answer = 5;
+                    answer = ANSWER_MLE;
                     break;
                 } else if (signo == SIGABRT) {
                     //memory
                     //runtime error
                     //cout << "stop abort" << endl;     //test
                     if (memory * psize / MB > (limit_memory - 1)){
-                        answer = 5;
+                        answer = ANSWER_MLE;
                     }else {
-                        answer = 3;
+                        answer = ANSWER_RE;
                     }
 
                     break;
                 } else {
-                    answer = 100;
+                    answer = ANSWER_OTHERS;
                     //cout << "signal other " << signo << endl;
                     break;
                 }
             } else{
                 //cout << "others" << endl;
-                answer = 100;
+                answer = ANSWER_OTHERS;
                 break;
             }
 
