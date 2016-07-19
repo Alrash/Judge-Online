@@ -1,0 +1,7 @@
+CC=g++
+EXE=judged
+SOURCES:=$(wildcard *.cpp ../public/*.cpp)
+HEADERS:=$(wildcard *.h ../public/*.h)
+
+executor:$(SOURCES) $(HEADERS)
+	$(CC) $(SOURCES) -o $(EXE) -std=c++11
