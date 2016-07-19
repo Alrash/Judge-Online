@@ -30,4 +30,10 @@ const int ANSWER_OLE = 6;
 const int ANSWER_CE = 7;
 const int ANSWER_OTHERS = 100;
 
+//管道中固定字串长度
+const int PIPE_LEN = 256;
+//管道中用于填充与切割的字符
+const char fillch = '@';
+const char splitch = ';';
+
 #endif
