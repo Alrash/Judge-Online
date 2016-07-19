@@ -345,6 +345,10 @@ int executor_function(int num){
  * limit_memory: 限制使用内存大小，不带小数点 (5, M)
  */
 int main(int argc, char *argv[]){
+    if (argc < 5){
+        fprintf(stderr, "param below 5");
+        exit(EXIT_FAILURE);
+    }
 
     extension = argv[1];
     count = stoi(argv[2]);
