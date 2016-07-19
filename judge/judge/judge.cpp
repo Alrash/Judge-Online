@@ -21,10 +21,11 @@ const int open_mode = O_WRONLY | O_NONBLOCK;
 /* *
  * 需要参数：
  * 本身提交sid (1)
- * 问题号pid (2)
- * 问题测试文件数count (3)
- * 问题限制时间sec (float/double, s, 4)
- * 问题限制内存大小memory (M, 5)
+ * 提交语言style (2)
+ * 问题号pid (3)
+ * 问题测试文件数count (4)
+ * 问题限制时间sec (float/double, s, 5)
+ * 问题限制内存大小memory (M, 6)
  */
 int main(int argc, char *argv[]){
     int pipeid = -1;
@@ -37,13 +38,17 @@ int main(int argc, char *argv[]){
     }
     buff.resize(PIPE_LEN, fillch);
 
+    //管道文件不存在，创建他
     if (access(pipe_path.c_str(), F_OK) == -1){
-        //管道文件不存在，创建他
+        //改变掩码值
+        mode_t origin = umask(0666);
         if (mkfifo(pipe_path.c_str(), 0666) != 0){
             //不能创建文件，退出
             fprintf(stderr, "can not craete fifo %s\n", pipe_path.c_str());
             exit(EXIT_FAILURE);
         }
+        //还原掩码值
+        umask(origin);
     }
 
     //保证能够打开管道文件
