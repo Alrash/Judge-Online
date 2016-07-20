@@ -11,7 +11,9 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>         //sprintf函数使用
+#include <stdlib.h>
 #include <unistd.h>        //execl函数使用
+#include <sys/wait.h>
 #include <vector>
 #include "../public/functions.h"
 #include "../public/config.h"
@@ -37,14 +39,14 @@ const int choise_len = compiler.size();
 
 //删除java源文件中的package指令和替换public class 名
 //使用范例：sprintf(buff, java_sed_scrpit.c_str(), "/www", 25252,"java.java", "www", "Main.java");
-const string java_sed_script  = "sed -re '/package.*/d;s/[ \t]*public[ \t]+class[ \t]+[^{]*/public class Main/g' %s/%d/%s > %s/check/Main.java";
+const string java_sed_script  = "sed -re '/package.*/d;s/[ \\t]*public[ \\t]+class[ \\t]+[^{]*/public class Main/g' %s/%d/%s > %s/check/Main.java";
 
 //删除c或cpp源文件中的包含sys/*或unistd.h的头文件
 //五个待填充的位置，前三个为待检查文件的绝对路径，后两个分别为root/check/Main.extension
-const string cpp_sed_script = "sed -re '/sys\\/.*/d;/\/dev\/.*/d;/unistd\\.h/d' %s/%d/%s > %s/check/Main.%s";
+const string cpp_sed_script = "sed -re '/sys\\/.*/d;/\\/dev\\/.*/d;/unistd\\.h/d' %s/%d/%s > %s/check/Main.%s";
 
 //python替换脚本
-const string python_sed_script = "sed -re '/import[ \t]*os/g' %s/%d/%s > %s/check/Main.py";
+const string python_sed_script = "sed -re '/import[ \\t]*os/g' %s/%d/%s > %s/check/Main.py";
 
 //获取argv的几个变量
 int style, sid;
@@ -76,11 +78,11 @@ int init(){
         break;
     //java
     case 3:
-        sprintf(script, cpp_sed_script.c_str(), root.c_str(), sid, file.c_str(), root.c_str());
+        sprintf(script, java_sed_script.c_str(), root.c_str(), sid, file.c_str(), root.c_str());
         break;
     //python3.5
     case 4:
-        sprintf(script, cpp_sed_script.c_str(), root.c_str(), sid, file.c_str(), root.c_str());
+        sprintf(script, python_sed_script.c_str(), root.c_str(), sid, file.c_str(), root.c_str());
         break;
     default:
         script[0] = '\0';
@@ -107,7 +109,7 @@ int compiler_function(){
     //使用子进程进行脚本替换处理
     //使用子进程的原因：使用execl后，执行的脚本会替换本进程的所有资源，之后的代码均不执行
     //可以使用system(char *command)代替
-    int pid = fork();
+    int pid = fork(), status;
     if (pid == 0){
         //执行脚本
         execl("/bin/sh", "sh", "-c", script, NULL);
@@ -115,7 +117,7 @@ int compiler_function(){
     }
 
     //等待子进程结束
-    wait();
+    waitpid(pid, &status, 0);
 
     if (access(destination_path, F_OK) == -1){
         perror("access");
@@ -148,7 +150,7 @@ int compiler_function(){
             exit(0);
         }
 
-        wait();
+        waitpid(_pid, &status, 0);
     }
 
     return 0;
