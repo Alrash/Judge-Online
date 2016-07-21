@@ -24,8 +24,9 @@ const int open_mode = O_WRONLY | O_NONBLOCK;
  * 提交语言style (2)
  * 问题号pid (3)
  * 问题测试文件数count (4)
- * 问题限制时间sec (float/double, s, 5)
- * 问题限制内存大小memory (M, 6)
+ * 问题输出是否需要一定格式isFormat (5)
+ * 问题限制时间sec (float/double, s, 6)
+ * 问题限制内存大小memory (M, 7)
  */
 int main(int argc, char *argv[]){
     int pipeid = -1;
