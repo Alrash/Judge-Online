@@ -19,7 +19,7 @@ std::vector<std::string> split(const std::string &str, const std::string &patter
 
         if (pos < size && pos != std::string::npos){
             result.push_back(str.substr(i, pos - i));
-            i += pos + pattern.size() - 1;
+            i = pos + pattern.size() - 1;
         }else{
             result.push_back(str.substr(i));
             break;
