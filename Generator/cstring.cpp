@@ -308,8 +308,7 @@ std::queue<std::vector<std::vector<Node> > > CString::parse(){
     }
 
     std::queue<std::vector<std::vector<Node> > > queue;
-    std::vector<std::vector<Node> > item;
-    //std::string tmp = std::string("");
+    std::vector<std::vector<Node> > item(1, std::vector<Node>(0));  //需要初始化
     Node node;
     Node::Description description;
     Info info;
@@ -334,6 +333,7 @@ std::queue<std::vector<std::vector<Node> > > CString::parse(){
             break;
         case '|':
             //std::cout << "|" << " " << i << std::endl;
+            //肯定错
             item.begin()->push_back(node);
             node = Node();
             break;
@@ -377,10 +377,6 @@ std::queue<std::vector<std::vector<Node> > > CString::parse(){
             break;
         }
     }
-    std::cout << "sad" << std::endl;
-
-    std::cout << "size: " << item.empty() << item.size();
-    std::cout<< " " << item.begin()->size() << std::endl;
 
     return queue;
 }
