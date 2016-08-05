@@ -52,69 +52,75 @@ const static std::map<char, std::string> binder = {
  * 2) 下次改造时，可以换成其他类名
  * 3) 对外接口(具体情况参见实现注释)
  *    CString() CString(string) CString(int, char*)
- *    setExpression(string)
- *    parse()
+ *    int setExpression(string)                     //设置表达式的值，准备解析
+ *    string getExpression()                        //获取当前表达式
+ *    map<string, string> getParameter()            //获取参数键值对
+ *    vector<string> _regex_search(string, string)  //正则匹配搜索
+ *    queue<vector<Columns>>parse()                 //解析函数
+ *    void prompt(int, string, string)              //打印错误信息
  */
 class CString{
-    public:
-        CString();
-        CString(std::string expression);
-        CString(int argc, char *argv[]);
+public:
+    CString();
+    CString(std::string expression);
+    CString(int argc, char *argv[]);
 
-        int setExpression(const std::string &expression);
-        std::string getExpression() const;
-        friend std::vector<std::vector<std::string> > _regex_search(std::string str, const std::string &regex_expression);
-        void prompt(int pos, const std::string &errInfo, const std::string &which = "错误：");
+    int setExpression(const std::string &expression);
+    std::string getExpression() const;
+    int setParameter();
+    std::map<std::string, std::string> getParameter() const;
+    friend std::vector<std::vector<std::string> > _regex_search(std::string str, const std::string &regex_expression);
+    void prompt(int pos, const std::string &errInfo, const std::string &which = "错误：");
 
 #if _USE_FRIEND_ == 0
-        //暂时仅能除去blank
-        std::string trim(const std::string &str);
+    //暂时仅能除去blank
+    std::string trim(const std::string &str);
 #define TRIM this->trim
 #else
-        friend std::string trim(const std::string &str);
+    friend std::string trim(const std::string &str);
 #define TRIM trim
 #endif
 
-        std::queue<std::vector<Columns> > parse();
-    private:
-        std::string expression;
-        //std::vector<std::vector<std::string> > parameter;
-        std::map<std::string, std::string> parameter;
+    std::queue<std::vector<Columns> > parse();
+private:
+    std::string expression;
+    std::map<std::string, std::string> parameter;
 
-        //解析函数返回值结构体
-        struct Info{
-            int step;
-            bool isError;
-            Columns::Node::Description description;
-            std::string str;
+    //解析函数返回值结构体
+    struct Info{
+        int step;
+        bool isError;
+        Columns::Node::Description description;
+        std::string str;
 
-            Info(bool isError = false){
-                this->isError = isError;
-                this->step = 0;
-                this->str = std::string("");
-                this->description = Columns::Node::Description();
-            };
-
-            Info& operator=(const Info &info){
-                this->isError = info.isError;
-                this->step = info.step;
-                this->str = info.str;
-                this->description = info.description;
-                return *this;
-            };
+        Info(bool isError = false){
+            this->isError = isError;
+            this->step = 0;
+            this->str = std::string("");
+            this->description = Columns::Node::Description();
         };
 
-        //检查-范围是否正确
-        bool checkRange(char before, char after, char start, char end);
+        Info& operator=(const Info &info){
+            this->isError = info.isError;
+            this->step = info.step;
+            this->str = info.str;
+            this->description = info.description;
+            return *this;
+        };
+    };
 
-        //处理字符
-        //为什么部分不合时宜地加了s？ 处理一对而已
-        Info roundBrackets(const std::string &str, int start);		//'('
-        Info squareBrackets(const std::string &str, int start);		//'['
-        Info braces(const std::string &str, int start);				//'{'
-        Info hyphen(const std::string &str, int start);				//'-'
-        Info escape(const std::string &str, int start);				//'\'
-        Info blank(const std::string &str, int start);				//' '
+    //检查-范围是否正确
+    bool checkRange(char before, char after, char start, char end);
+    bool checkParameter(const std::string &parameter, std::string &value);
+
+    //处理字符
+    //为什么部分不合时宜地加了s？ 处理一对而已
+    Info roundBrackets(const std::string &str, int start);		//'('
+    Info squareBrackets(const std::string &str, int start);		//'['
+    Info braces(const std::string &str, int start);				//'{'
+    Info hyphen(const std::string &str, int start);				//'-'
+    Info escape(const std::string &str, int start);				//'\'
+    Info blank(const std::string &str, int start);				//' '
 
 };
 

@@ -54,6 +54,7 @@ std::vector<std::vector<std::string> > _regex_search(std::string str, const std:
 
 CString::CString(){
     this->expression = "";
+    this->setParameter();
 }
 
 CString::CString(std::string expression){
@@ -67,18 +68,23 @@ CString::CString(std::string expression){
  */
 CString::CString(int argc, char *argv[]){
 	this->expression = TRIM(argv[0]);
+    this->setParameter();
 
 	std::vector<std::string> split_str;
     for (int i = 1; i < argc - 1; i++){
 		if (argv[i][0] != '-'){
-			std::cout << "忽略参数：" << argv[i] << std::endl;
+            this->prompt(0, argv[i], "忽略参数：");
 		}else {
 			split_str = split(argv[i] + 1, "=");
 			if (split_str.size() == 2 && 
 					used_parameter.find(split_str[0]) != used_parameter.end()){
-				this->parameter.insert(std::pair<std::string, std::string>(split_str[0], split_str[1]));
-			}else {
-				std::cout << "忽略参数：" << argv[i] << std::endl;
+                if (checkParameter(split_str[0], split_str[1])){
+                    this->parameter[split_str[0]] = split_str[1];
+                }else {
+                    this->prompt(0, std::string(argv[i]) + std::string("参数格式错误"), "忽略参数：");
+                }
+            }else {
+                this->prompt(0, argv[i], "忽略参数：");
 			}
 		}
 	}
@@ -86,16 +92,21 @@ CString::CString(int argc, char *argv[]){
 
 int CString::setExpression(const std::string &expression){
     this->expression = TRIM(expression);
+    this->setParameter();
 
     //获取参数对
 	//检测使用参数是否存在，不存在出提示，存在从表达式中移除
 	//本函数仅能检测-xx=xx的参数，及格式正确的参数，未能检测其余是否正确，如参数值
     for (auto item : _regex_search(this->expression, "(-)([^ \\t]+)(=)([^ \\t]+)")){
 		if (used_parameter.find(*std::next(item.begin(), 2)) != used_parameter.end()){
-			this->parameter.insert(std::pair<std::string, std::string>(*std::next(item.begin(), 2), *std::next(item.begin(), 4)));
-			this->expression = this->expression.replace(this->expression.find(*(item.begin())), item.begin()->size(), "");
-		}else {
-			std::cout << "invalid parameter: " << *(item.begin()) << std::endl;
+            if (this->checkParameter(*std::next(item.begin(), 2), *std::next(item.begin(), 4))){
+                this->parameter[*std::next(item.begin(), 2)] = *(std::next(item.begin(), 4));
+			    this->expression = this->expression.replace(this->expression.find(*(item.begin())), item.begin()->size(), "");
+            }else{
+                this->prompt(0, std::string(*(item.begin())) + std::string("参数格式错误"), "invalid parameter");
+            }
+        }else {
+            this->prompt(0, *(item.begin()), "invalid parameter");
 		}
     }
 
@@ -119,6 +130,48 @@ std::string CString::getExpression() const{
     return result;
 }
 
+int CString::setParameter(){
+    for (auto item : used_parameter){
+        this->parameter[item] = default_parameter.at(item);
+    }
+    return 0;
+}
+
+/* *
+ * 获取额外参数对
+ */
+std::map<std::string, std::string> CString::getParameter() const{
+    return this->parameter;
+}
+
+/* *
+ * 检测已经正确的参数的值格式
+ */
+bool CString::checkParameter(const std::string &parameter, std::string &value){
+    if (!parameter.compare(NUMLINE) || !parameter.compare(NUMCOLUMN)){
+        if (std::regex_match(value, std::regex("\\d+|l\\d+c\\d+"))){
+            return true;
+        }
+        return false;
+    }
+
+    if (!parameter.compare(RECT)){
+        if (std::regex_match(value, std::regex("\\{(\\d+ *, *){2}(\\d+|l\\d+c\\d+)\\}"))){
+            //修正value值
+            value = value.substr(value.find_first_not_of("{"), (value.at(0) == '{' ? value.size() - 2 : std::string::npos));
+            return true;
+        }
+        return false;
+    }
+
+    //理论上使用不到
+    return false;
+}
+
+/* *
+ * 以不同常规颜色打印信息提示(这里为红色和蓝色)
+ * pos == 0时，不输出表达式
+ */
 void CString::prompt(int pos, const std::string &errInfo, const std::string &which){
 #ifdef _WIN32
     HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);  
@@ -132,7 +185,7 @@ void CString::prompt(int pos, const std::string &errInfo, const std::string &whi
     // Set the new color  
     SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_INTENSITY | BACKGROUND_GREEN);  
 
-    if (!this->expression.empty()){
+    if (pos){
     std::cerr << this->getExpression() << std::endl;
         for (int i = 0; i < pos; i++)
             std::cerr << " ";
@@ -143,13 +196,13 @@ void CString::prompt(int pos, const std::string &errInfo, const std::string &whi
     // Restore the original color  
     SetConsoleTextAttribute(h, wOldColorAttrs);
 #else
-    if (!this->expression.empty()){
+    if (pos){
         std::cerr << "\033[01;34m" << this->getExpression() << "\033[0m" << std::endl;
         for (int i = 0; i < pos; i++)
             std::cerr << " ";
-        std::cerr << "\033[01;31m" << "^" << std::endl;
+        std::cerr << "\033[01;31m" << "^\033[0m" << std::endl;
     }
-    std::cerr << which << errInfo << "\033[0m" << std::endl;
+    std::cerr << "\033[01;31m" << which << errInfo << "\033[0m" << std::endl;
 #endif
 }
 

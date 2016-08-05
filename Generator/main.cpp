@@ -18,6 +18,7 @@
 #include <regex>
 #include "cstring.h"
 #include "config.h"
+#include "generator.h"
 #include "functions.h"
 
 using namespace std;
@@ -46,10 +47,19 @@ int main(int argc, char *argv[]){
 	
 	//CString("daksdaskd[ ]asdasnd -asda=sd --asdnjd=asdnj -numline=4 -numline");
 	cout << "输入: " << endl;
-	cin >> str;
-	CString cstring =  CString(str);
-    cstring.parse();
-
+	//cin >> str;
+    vector<vector<string>> test;
+    test = _regex_search("1,3,15", "(\\d+,){2}(\\d+)");
+    for (auto line : test){
+        for (auto item : line){
+            cout << item << " ";
+        }
+        cout << endl;
+    }
+    cout << test.empty() << stoi(*prev(test[0].end(), 1)) << endl;
+	CString cstring =  CString();
+    Generator generator = Generator();
+    generator.setUnit(cstring.parse(), map<string, string>());
 
     return 0;
 }

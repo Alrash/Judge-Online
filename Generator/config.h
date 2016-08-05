@@ -14,14 +14,26 @@
 
 /* *
  * 还没有具体定下来
- * norepeat: 不重复，使用$0,$1... rect
- * numcolumn: 列数
- * numline: 行数
+ * norepeat: 不重复，使用$-1(y轴方向), $0(行内), $1(第1个括号内)... rect(line * column)
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ * 已使用的 by 2016.08.03 01:33:55
+ * numcolumn: 列数，具体数字或lXcY(x行y列所对应的数值)
+ * numline: 行数，同上
+ * rect:重复区域，{x, n, lXcY / num}(第x行开始的n行，重复几次；例如{1,2,2}，包含第1、2两行，并且这两行需重复两次)
  */
+#define NUMCOLUMN "numcolumn"
+#define NUMLINE   "numline"
+#define RECT      "rect"
 const std::set<std::string> used_parameter = {
-	"norepeat",
-	"numcolumn",
-	"numline"
+	//"norepeat",
+	NUMCOLUMN,
+	NUMLINE,
+    RECT
+};
+const static std::map<std::string, std::string> default_parameter = {
+    {NUMCOLUMN, "1"},
+    {NUMLINE, "1"},
+    {RECT, "0,1,1"}
 };
 
 //第二层括号替换符，line表示第几行
