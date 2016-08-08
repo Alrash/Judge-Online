@@ -90,6 +90,8 @@ void Generator::resetDeque(){
 }
 
 int Generator::fileAppend(char *filename, std::string lineContent){
+    std::cout << lineContent << std::endl;
+    return 0;
     FILE *fp;
 
     if ((fp = fopen(filename, "a")) == NULL){
@@ -102,6 +104,10 @@ int Generator::fileAppend(char *filename, std::string lineContent){
     return 0;
 }
 
+/* *
+ * 返回start至end中的随机值
+ * 闭区间[start, end]
+ */
 int Generator::rand(int start, int end){
     if (start == end)
         return start;
@@ -128,6 +134,7 @@ int Generator::generator(){
         std::cerr << "没有设置生成次数，默认采用1" << std::endl;
         this->count = 1;
     }
+    this->resetDeque();
 
     char filename[256];
     int numcolumn = 0, numline = 0, step = 0, rectCount = 0;
@@ -174,10 +181,11 @@ int Generator::generator(){
                         }else {
                             numcolumn = this->use_value[std::stoi(search[0][1])][std::stoi(search[0][2])];
                         }
-                        for (int numColumn = numcolumn; numColumn < numcolumn; numcolumn++){
-                            //真正的循环queue得到单行样例信息
-                            lineContent += "";
-                        }
+                        //行生成
+                        lineContent = this->getLineContent(subline->queue, numcolumn);
+                        //更新map值(表，非key->value)
+                        this->updateUse_Value(lineContent, std::distance(deque.begin(), line) + 1);
+                        this->fileAppend(filename, lineContent);
                     }
                 }
                 //修正偏移量
@@ -190,4 +198,88 @@ int Generator::generator(){
 int Generator::generator(int count){
     this->setCount(count);
     this->generator();
+}
+
+std::string Generator::getLineContent(const std::queue<std::vector<Columns> > &queue, int times){
+    std::string lineContent = "";
+    std::queue<std::vector<Columns> > copy;
+    std::queue<Columns::Node::Description> queue_description;
+    std::vector<Columns> line;
+    Columns::Node node;
+    Columns::Node::Description description;
+    int pos, count = 0, size = 0;
+
+    //行循环次数
+    for (int i = 0; i < times; i++){
+        copy = queue;
+        //真正的循环queue得到单行样例信息
+        while(!copy.empty()){
+            line = copy.front();
+            pos = this->rand(0, line[0].vNode.size() - 1);
+            node = line[0].vNode[pos];
+            size = rand(line[0].description.min_times, line[0].description.max_times);
+
+            for (int m = 0; m < size; m++){
+                //使用描述信息生成字符串
+                queue_description = node.description;
+                while(!queue_description.empty()){
+                    description = queue_description.front();
+                    count = rand(description.min_times, description.max_times);
+                    
+                    for (int n = 0; n < count; n++){
+                        if (std::regex_match(node.str.substr(description.start, description.end + 1 - description.start), std::regex(secondRoundBrackets))){
+                            //匹配到二层括号
+                            int linenum = std::stoi(replaceAll(node.str.substr(description.start, description.end + 1 - description.start), "#", ""));
+                            lineContent += this->getSecondRoundBrackets(line[linenum]);
+                        }else {
+                            lineContent += node.str.at(this->rand(description.start, description.end));
+                        }
+                    }
+                    
+                    queue_description.pop();
+                }
+            }
+            copy.pop();
+        }
+        lineContent += " ";
+    }
+    return trim(lineContent);
+}
+
+std::string Generator::getSecondRoundBrackets(Columns subline){
+    std::string str = "";
+    Columns::Node::Description description;
+    std::queue<Columns::Node::Description> queue_description;
+    Columns::Node node = subline.vNode[rand(0, subline.vNode.size() - 1)];
+    int times, count = rand(subline.description.min_times, subline.description.max_times);
+
+    for (int i = 0; i < count; i++){
+        queue_description = node.description;
+        while (!queue_description.empty()){
+            description = queue_description.front();
+            times = rand(description.min_times, description.max_times);
+            for (int i = 0; i < times; i++)
+                str += node.str[rand(description.start, description.end)];
+            queue_description.pop();
+        }
+    }
+
+    return str;
+}
+
+void Generator::updateUse_Value(std::string lineContent, int line){
+    std::vector<std::string> num = split(lineContent, " ");
+
+    for (int i = 1; i < VALUE_COLUMN + 1; i++)
+        if (this->use_value[line][i] && num.size() >= i){
+            this->use_value[line][i] = std::stoi(num[i - 1]);
+        }
+
+#if __TEST__ != 0
+    for (int i = 0; i < 6; i++){
+        for (int j = 0; j < 16; j++)
+            std::cout << this->use_value[i][j] << " ";
+        std::cout << std::endl;
+    }
+#endif
 }

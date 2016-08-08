@@ -11,10 +11,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <queue>
-#include <ctime>
 #include <map>
-#include <algorithm>
 #include <regex>
 #include "cstring.h"
 #include "config.h"
@@ -23,43 +20,62 @@
 
 using namespace std;
 
-string str;
-
-struct ddd{
-	string str;
+map<string, string> main_parameter = {
+    {"times", "1"},
+    {"exp", ""},
+    {"h", ""},
+    {"-help", ""}
 };
 
 int main(int argc, char *argv[]){
-    /*if (argc == 1){
-        cout << "输入表达式：";
-        getline(cin, str);
-    }else {
-        for (int i = 1; i < argc; i++){
-            str += argv[i];
-            str += " ";
-        }
-    }*/
+    int num = 0;
+    string expression, str;
+    CString cstring;
+    Generator generator;
 
-	/*
-	for (auto it : split(argv[1] + 1, "=")){
-		cout << it << "@" << endl;
-	}*/
-	
-	//CString("daksdaskd[ ]asdasnd -asda=sd --asdnjd=asdnj -numline=4 -numline");
-	cout << "输入: " << endl;
-	//cin >> str;
-    vector<vector<string>> test;
-    test = _regex_search("1,3,15", "(\\d+,){2}(\\d+)");
-    for (auto line : test){
-        for (auto item : line){
-            cout << item << " ";
+    if (argc != 1){
+        vector<string> vts;
+        for (int i = 1; i < argc; i++){
+            vts = split(argv[i] + 1, "=");
+            if (main_parameter.find(vts[0]) != main_parameter.end()){
+                if (vts.size() > 2){
+                    cerr << "参数错误：" << argv[i] << endl;
+                    continue;
+                }
+
+                if (!vts[0].compare("times")){
+                    if (regex_match(vts[1], regex("\\d+"))){
+                        main_parameter[vts[0]] = vts[1];
+                    }else {
+                        cerr << "参数值形式错误：" << argv[i] << endl;
+                    }
+                    continue;
+                }
+
+                if (!vts[0].compare("exp")){
+                    main_parameter[vts[0]] = vts[1];
+                }
+            }else {
+                cerr << "忽略参数：" << argv[i] << endl;
+            }
         }
-        cout << endl;
     }
-    cout << test.empty() << stoi(*prev(test[0].end(), 1)) << endl;
-	CString cstring =  CString();
-    Generator generator = Generator();
-    generator.setUnit(cstring.parse(), map<string, string>());
+
+    generator.setCount(stoi(main_parameter["times"]));
+	
+    while (true){
+        num++;
+        cout << "请输入第" << num << "行表达式及参数: " << endl;
+        getline(cin, str);
+        if (!str.compare("end")){
+            break;
+        }
+        cstring.setExpression(str);
+        generator.setUnit(cstring.parse(), cstring.getParameter());
+        expression += " --link ";
+    }
+    
+    generator.generator();
 
     return 0;
 }

@@ -64,6 +64,9 @@ private:
     int fileAppend(char *filename, std::string lineContent);
     int rand(int start, int end);
     std::vector<std::string> splitRect(std::string rect);
+    std::string getLineContent(const std::queue<std::vector<Columns> > &queue, int times);
+    void updateUse_Value(std::string lineContent, int line);
+    std::string getSecondRoundBrackets(Columns subline);
 };
 
 #endif

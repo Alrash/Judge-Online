@@ -523,11 +523,14 @@ std::queue<std::vector<Columns> > CString::parse(){
             }else if (roundBracketsCount == 2){
                 //第二层括号
                 /* *
-                 * 增加替换符，将node入数组尾部(队尾?)
+                 * 增加替换符，将node入数组尾部(队尾?)，并在node中加入描述信息
                  * 在case ')'那里，使用iter = origin, node = iter->vNode.back()取回原记录值
                  */
                 std::string symbol= std::string(secondRoundBrackets);
+                description.start = node.str.size();
                 node.str += symbol.replace(secondRoundBrackets.find(REPLACE), REPLACE.size(), std::to_string(line.size()));
+                description.end = node.str.size() - 1;
+                node.description.push(description);
                 iter->vNode.push_back(node);
                 node = Columns::Node();
 

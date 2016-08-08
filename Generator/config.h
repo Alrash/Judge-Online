@@ -37,11 +37,11 @@ const static std::map<std::string, std::string> default_parameter = {
 };
 
 //第二层括号替换符，line表示第几行
-const std::string REPLACE = "line";
+const std::string REPLACE = "\\d+";
 const std::string secondRoundBrackets = "##" + REPLACE +"##";
 
 //0表示不是测试 1测试
-#define __TEST__ 1
+#define __TEST__ 0
 
 /* *
  * 最初的计划: vector<vector<string>>
