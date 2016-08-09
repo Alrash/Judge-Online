@@ -66,11 +66,11 @@ void Generator::resetDeque(){
     int pos = 0;
     std::vector<std::vector<std::string> > search;
     for (auto item : this->deque){
-        if (item.parameter[RECT].compare(default_parameter.at(RECT))){
+        if (item.parameter[RECTANGLE].compare(default_parameter.at(RECTANGLE))){
             //与默认值不同，赋值第..个，清空原本的
-            item.parameter[RECT] = replaceAll(item.parameter[RECT], " ", "");
-            std::next(this->deque.begin(), std::stoi(item.parameter[RECT]) - 1)->parameter[RECT] = item.parameter[RECT];
-            item.parameter[RECT] = default_parameter.at(RECT);
+            item.parameter[RECTANGLE] = replaceAll(item.parameter[RECTANGLE], " ", "");
+            std::next(this->deque.begin(), std::stoi(item.parameter[RECTANGLE]) - 1)->parameter[RECTANGLE] = item.parameter[RECTANGLE];
+            item.parameter[RECTANGLE] = default_parameter.at(RECTANGLE);
         }
 
         //更新use_value表
@@ -82,7 +82,7 @@ void Generator::resetDeque(){
         if (!search.empty()){
             use_value[std::stoi(search[0][1])][std::stoi(search[0][2])] = 1;
         }
-        search = _regex_search(item.parameter[RECT], "(\\d+,){2}(l(\\d+)c(\\d+))");
+        search = _regex_search(item.parameter[RECTANGLE], "(\\d+,){2}(l(\\d+)c(\\d+))");
         if (!search.empty()){
             use_value[std::stoi(*std::prev(search[0].end(), 2))][std::stoi(*std::prev(search[0].end(), 1))] = 1;
         }
@@ -154,12 +154,12 @@ int Generator::generator(){
 
             //区域循环次数
             //部分赋值
-            if (std::regex_match(parameter[RECT], std::regex("(\\d+,){2}(\\d+)"))){
-                search = _regex_search(parameter[RECT], "(\\d+,){2}(\\d+)");
+            if (std::regex_match(parameter[RECTANGLE], std::regex("(\\d+,){2}(\\d+)"))){
+                search = _regex_search(parameter[RECTANGLE], "(\\d+,){2}(\\d+)");
                 rectCount = std::stoi(*std::prev(search[0].end(), 1));
                 step = std::stoi(search[0][1]);
             }else {
-                search = _regex_search(parameter[RECT], "(\\d+,){2}(l(\\d+)c(\\d+))");
+                search = _regex_search(parameter[RECTANGLE], "(\\d+,){2}(l(\\d+)c(\\d+))");
                 rectCount = this->use_value[std::stoi(*std::prev(search[0].end(), 2))][std::stoi(*std::prev(search[0].end(), 1))];
                 step = std::stoi(search[0][1]);
             }

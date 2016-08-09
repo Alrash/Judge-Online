@@ -115,12 +115,12 @@ private:
 
     //处理字符
     //为什么部分不合时宜地加了s？ 处理一对而已
-    Info roundBrackets(const std::string &str, int start);		//'('
-    Info squareBrackets(const std::string &str, int start);		//'['
-    Info braces(const std::string &str, int start);				//'{'
-    Info hyphen(const std::string &str, int start);				//'-'
-    Info escape(const std::string &str, int start);				//'\'
-    Info blank(const std::string &str, int start);				//' '
+    Info roundBrackets(const std::string &str, int start);         //'('
+    Info squareBrackets(const std::string &str, int start);        //'['
+    Info braces(const std::string &str, int start);                //'{'
+    Info hyphen(const std::string &str, int start);                //'-'
+    Info escape(const std::string &str, int start);                //'\'
+    Info blank(const std::string &str, int start);                 //' '
 
 };
 

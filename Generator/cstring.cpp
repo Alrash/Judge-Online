@@ -1,8 +1,8 @@
 /*************************************************************************
-	> File Name: cstring.cpp
-	> Author: Alrash
-	> Mail: kasukuikawai@gmail.com
-	> Created Time: Sat 23 Jul 2016 03:04:10 PM CST
+    > File Name: cstring.cpp
+    > Author: Alrash
+    > Mail: kasukuikawai@gmail.com
+    > Created Time: Sat 23 Jul 2016 03:04:10 PM CST
  ************************************************************************/
 
 #include <iostream>
@@ -67,17 +67,17 @@ CString::CString(std::string expression){
  * 较于CString(string)，检测更准
  */
 CString::CString(int argc, char *argv[]){
-	this->expression = TRIM(argv[0]);
+    this->expression = TRIM(argv[0]);
     this->setParameter();
 
-	std::vector<std::string> split_str;
+    std::vector<std::string> split_str;
     for (int i = 1; i < argc - 1; i++){
-		if (argv[i][0] != '-'){
+        if (argv[i][0] != '-'){
             this->prompt(0, argv[i], "忽略参数：");
-		}else {
-			split_str = split(argv[i] + 1, "=");
-			if (split_str.size() == 2 && 
-					used_parameter.find(split_str[0]) != used_parameter.end()){
+        }else {
+            split_str = split(argv[i] + 1, "=");
+            if (split_str.size() == 2 && 
+                    used_parameter.find(split_str[0]) != used_parameter.end()){
                 if (checkParameter(split_str[0], split_str[1])){
                     this->parameter[split_str[0]] = split_str[1];
                 }else {
@@ -85,9 +85,9 @@ CString::CString(int argc, char *argv[]){
                 }
             }else {
                 this->prompt(0, argv[i], "忽略参数：");
-			}
-		}
-	}
+            }
+        }
+    }
 }
 
 int CString::setExpression(const std::string &expression){
@@ -95,19 +95,19 @@ int CString::setExpression(const std::string &expression){
     this->setParameter();
 
     //获取参数对
-	//检测使用参数是否存在，不存在出提示，存在从表达式中移除
-	//本函数仅能检测-xx=xx的参数，及格式正确的参数，未能检测其余是否正确，如参数值
+    //检测使用参数是否存在，不存在出提示，存在从表达式中移除
+    //本函数仅能检测-xx=xx的参数，及格式正确的参数，未能检测其余是否正确，如参数值
     for (auto item : _regex_search(this->expression, "(-)([^ \\t]+)(=)([^ \\t]+)")){
-		if (used_parameter.find(*std::next(item.begin(), 2)) != used_parameter.end()){
+        if (used_parameter.find(*std::next(item.begin(), 2)) != used_parameter.end()){
             if (this->checkParameter(*std::next(item.begin(), 2), *std::next(item.begin(), 4))){
                 this->parameter[*std::next(item.begin(), 2)] = *(std::next(item.begin(), 4));
-			    this->expression = this->expression.replace(this->expression.find(*(item.begin())), item.begin()->size(), "");
+                this->expression = this->expression.replace(this->expression.find(*(item.begin())), item.begin()->size(), "");
             }else{
                 this->prompt(0, std::string(*(item.begin())) + std::string("参数格式错误"), "invalid parameter");
             }
         }else {
             this->prompt(0, *(item.begin()), "invalid parameter");
-		}
+        }
     }
 
     //去除连续空格
@@ -155,7 +155,7 @@ bool CString::checkParameter(const std::string &parameter, std::string &value){
         return false;
     }
 
-    if (!parameter.compare(RECT)){
+    if (!parameter.compare(RECTANGLE)){
         if (std::regex_match(value, std::regex("\\{(\\d+ *, *){2}(\\d+|l\\d+c\\d+)\\}"))){
             //修正value值
             value = value.substr(value.find_first_not_of("{"), (value.at(0) == '{' ? value.size() - 2 : std::string::npos));
@@ -233,7 +233,7 @@ bool CString::checkRange(char before, char after, char start, char end){
 }
 
 CString::Info CString::roundBrackets(const std::string &str, int start){
-	return Info();
+    return Info();
 }
 
 /* *
@@ -300,7 +300,7 @@ CString::Info CString::squareBrackets(const std::string &str, int start){
     std::sort(info.str.begin(), info.str.end());
     info.str.resize(std::distance(info.str.begin(), std::unique(info.str.begin(), info.str.end())));
 
-	return info;
+    return info;
 }
 
 /* *
@@ -360,7 +360,7 @@ CString::Info CString::braces(const std::string &str, int start){
  * 暂时无用 by 2016.07.28 22:53:00
  */
 CString::Info CString::hyphen(const std::string &str, int start){
-	return Info(true);
+    return Info(true);
 }
 
 /* *

@@ -1,8 +1,8 @@
 /*************************************************************************
-	> File Name: main.cpp
-	> Author: Alrash
-	> Mail: kasukuikawai@gmail.com
-	> Created Time: Sat 23 Jul 2016 02:01:19 PM CST
+    > File Name: main.cpp
+    > Author: Alrash
+    > Mail: kasukuikawai@gmail.com
+    > Created Time: Sat 23 Jul 2016 02:01:19 PM CST
     > Function: 生成测试输入用例
                     利用部分基础正则表达式产生
                     仅支持圆括号两层嵌套，比如ip地址正则匹配
@@ -59,10 +59,15 @@ int main(int argc, char *argv[]){
                 cerr << "忽略参数：" << argv[i] << endl;
             }
         }
+    }else {
+        int times;
+        cout << "输出文件数量：";
+        cin >> times;
+        main_parameter["times"] = to_string(times);
     }
 
     generator.setCount(stoi(main_parameter["times"]));
-	
+    
     while (true){
         num++;
         cout << "请输入第" << num << "行表达式及参数: " << endl;

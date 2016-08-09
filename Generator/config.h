@@ -1,8 +1,8 @@
 /*************************************************************************
-	> File Name: config.h
-	> Author: Alrash
-	> Mail: kasukuikawai@gmail.com
-	> Created Time: Tue 26 Jul 2016 12:51:15 PM CST
+    > File Name: config.h
+    > Author: Alrash
+    > Mail: kasukuikawai@gmail.com
+    > Created Time: Tue 26 Jul 2016 12:51:15 PM CST
  ************************************************************************/
 
 #ifndef _CONFIG_H
@@ -23,17 +23,17 @@
  */
 #define NUMCOLUMN "numcolumn"
 #define NUMLINE   "numline"
-#define RECT      "rect"
+#define RECTANGLE "rectangle"
 const std::set<std::string> used_parameter = {
-	//"norepeat",
-	NUMCOLUMN,
-	NUMLINE,
-    RECT
+    //"norepeat",
+    NUMCOLUMN,
+    NUMLINE,
+    RECTANGLE
 };
 const static std::map<std::string, std::string> default_parameter = {
     {NUMCOLUMN, "1"},
     {NUMLINE, "1"},
-    {RECT, "0,1,1"}
+    {RECTANGLE, "0,1,1"}
 };
 
 //第二层括号替换符，line表示第几行
@@ -50,65 +50,65 @@ const std::string secondRoundBrackets = "##" + REPLACE +"##";
  * 现变量: vector<Columns>
  */
 struct Columns{
-	struct Node{
-		struct Description{
-			int start, end;
-			int max_times, min_times;
-	
-			Description(){
-				min_times = max_times = 1;
-				start = end = 0;
-			};
+    struct Node{
+        struct Description{
+            int start, end;
+            int max_times, min_times;
+    
+            Description(){
+                min_times = max_times = 1;
+                start = end = 0;
+            };
 
-			Description(const Description &description){
-				*this = description;
-			};
-	
-			Description& operator=(const Description &description){
-				this->start = description.start;
-				this->end = description.end;
-				this->min_times = description.min_times;
-				this->max_times = description.max_times;
-				return *this;
-			};
-		};
-	
-		std::string str;
-		std::queue<Description> description;
-	
-		Node(){
-			str = std::string("");
-			description = std::queue<Description>();
-		};
-	
-		Node(const Node &node){
-			*this = node;
-		}
-	
-		Node& operator=(const Node &node){
-			this->str = node.str;
-			this->description = node.description;
-			return *this;
-		};
-	};
+            Description(const Description &description){
+                *this = description;
+            };
+    
+            Description& operator=(const Description &description){
+                this->start = description.start;
+                this->end = description.end;
+                this->min_times = description.min_times;
+                this->max_times = description.max_times;
+                return *this;
+            };
+        };
+    
+        std::string str;
+        std::queue<Description> description;
+    
+        Node(){
+            str = std::string("");
+            description = std::queue<Description>();
+        };
+    
+        Node(const Node &node){
+            *this = node;
+        }
+    
+        Node& operator=(const Node &node){
+            this->str = node.str;
+            this->description = node.description;
+            return *this;
+        };
+    };
 
-	std::vector<Node> vNode;
-	Node::Description description;				//暂时使用min_times和max_times
+    std::vector<Node> vNode;
+    Node::Description description;                //暂时使用min_times和max_times
 
-	Columns(){
-		vNode = std::vector<Node>(0, Node());
-		description = Node::Description();
-	};
+    Columns(){
+        vNode = std::vector<Node>(0, Node());
+        description = Node::Description();
+    };
 
-	Columns(const Columns &Columns){
-		*this = Columns;
-	};
+    Columns(const Columns &Columns){
+        *this = Columns;
+    };
 
-	Columns& operator=(const Columns &Columns){
-		this->vNode = Columns.vNode;
-		this->description = Columns.description;
-		return *this;
-	};
+    Columns& operator=(const Columns &Columns){
+        this->vNode = Columns.vNode;
+        this->description = Columns.description;
+        return *this;
+    };
 };
 
 #endif
