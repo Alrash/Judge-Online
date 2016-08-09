@@ -31,7 +31,7 @@ std::vector<std::string> split(const std::string &str, const std::string &patter
 }
 
 //替换所有substr所指字符串
-std::string replaceAll(const std::string &str, const std::string &substr, const std::string repstr){
+std::string replaceAll(const std::string &str, const std::string &substr, const std::string &repstr){
     std::string result = str;
     int len = substr.size(), pos;
 

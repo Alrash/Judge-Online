@@ -31,6 +31,6 @@ std::vector<std::string> split(const std::string &str, const std::string &patter
  * @return:
  *      返回已经替换好的字符串
  */
-std::string replaceAll(const std::string &str, const std::string &substr, const std::string repstr);
+std::string replaceAll(const std::string &str, const std::string &substr, const std::string &repstr);
 
 #endif

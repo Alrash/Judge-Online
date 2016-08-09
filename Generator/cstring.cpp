@@ -183,7 +183,7 @@ void CString::prompt(int pos, const std::string &errInfo, const std::string &whi
     wOldColorAttrs = csbiInfo.wAttributes;  
     
     // Set the new color  
-    SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_INTENSITY | BACKGROUND_GREEN);  
+    SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_INTENSITY);  
 
     if (pos){
     std::cerr << this->getExpression() << std::endl;
