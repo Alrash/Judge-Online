@@ -4,7 +4,7 @@
  */
 
 create user 'JudgeOnline' identified by 'judgement';
-grant select, update, delete on JudgeOnline.* to 'JudgeOnline'@'%' identified by 'judgement';
+grant all on JudgeOnline.* to 'JudgeOnline'@'localhost' identified by 'judgement';
 
 create database `JudgeOnline`;
 
