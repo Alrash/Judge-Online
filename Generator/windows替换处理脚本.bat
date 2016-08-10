@@ -2,7 +2,7 @@
 @echo off
 ::使用utf-8编码
 chcp 65001
-for /r . %%n in (*.cpp,*.h,Makefile) do @(
+for /r . %%n in (*.cpp,*.h,Makefile,help) do @(
     ::文件换行
     for /f "delims=" %%i in (%%n) do @(echo.%%i) >> %%n_tmp
     ::删除原文件
@@ -12,9 +12,10 @@ for /r . %%n in (*.cpp,*.h,Makefile) do @(
 ren *.cpp_tmp *.cpp
 ren *.h_tmp *.h
 ren Makefile_tmp Makefile
+ren help_tmp helpfile
 
 If Not Exist UTF82ANSI.vbs (
-    For /F "usebackq skip=26 tokens=*" %%i In ("%~0") Do Echo %%i>>UTF82ANSI.vbs
+    For /F "usebackq skip=27 tokens=*" %%i In ("%~0") Do Echo %%i>>UTF82ANSI.vbs
 )
 For /R %%i In (*.h *.cpp) Do (
     UTF82ANSI.vbs "%%i"

@@ -24,9 +24,11 @@ public:
 
     int setUnit(std::queue<std::vector<Columns> > queue, std::map<std::string, std::string> parameter);
     int setCount(int count);
+    std::string getDir() const;
 
     int generator();
     int generator(int count);
+    int fileAppend(const char *filename, std::string lineContent, std::string mode = std::string("a"));
 
 private:
     struct Unit{
@@ -61,7 +63,6 @@ private:
     int use_value[VALUE_LINE + 1][VALUE_COLUMN + 1];
 
     void resetDeque();              //更改队列内部分内容
-    int fileAppend(char *filename, std::string lineContent);
     int rand(int start, int end);
     std::vector<std::string> splitRect(std::string rect);
     std::string getLineContent(const std::queue<std::vector<Columns> > &queue, int times);

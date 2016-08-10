@@ -125,7 +125,12 @@ std::string CString::getExpression() const{
         result += " -";
         result += item.first;
         result += "=";
-        result += item.second;
+        if (!item.first.compare(RECTANGLE)){
+            result += "{";
+            result += item.second;
+            result += "}";
+	}else
+            result += item.second;
     }
     return result;
 }

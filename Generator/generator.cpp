@@ -42,8 +42,7 @@ Generator::Generator(){
     _mkdir(dir.c_str());
     dir += "\\";
 #else
-    //mkdir(dir.c_str(), 0755);
-    dir = "test";
+    mkdir(dir.c_str(), 0755);
     dir += "/";
 #endif
 };
@@ -62,17 +61,14 @@ int Generator::setCount(int count){
     return 0;
 }
 
+std::string Generator::getDir() const{
+    return this->dir;
+}
+
 void Generator::resetDeque(){
     int pos = 0;
     std::vector<std::vector<std::string> > search;
     for (auto item : this->deque){
-        if (item.parameter[RECTANGLE].compare(default_parameter.at(RECTANGLE))){
-            //与默认值不同，赋值第..个，清空原本的
-            item.parameter[RECTANGLE] = replaceAll(item.parameter[RECTANGLE], " ", "");
-            std::next(this->deque.begin(), std::stoi(item.parameter[RECTANGLE]) - 1)->parameter[RECTANGLE] = item.parameter[RECTANGLE];
-            item.parameter[RECTANGLE] = default_parameter.at(RECTANGLE);
-        }
-
         //更新use_value表
         search = _regex_search(item.parameter[NUMCOLUMN], "l(\\d+)c(\\d+)");
         if (!search.empty()){
@@ -86,15 +82,21 @@ void Generator::resetDeque(){
         if (!search.empty()){
             use_value[std::stoi(*std::prev(search[0].end(), 2))][std::stoi(*std::prev(search[0].end(), 1))] = 1;
         }
+
+        if (item.parameter[RECTANGLE].compare(default_parameter.at(RECTANGLE))){
+            //与默认值不同，赋值第..个，清空原本的
+            item.parameter[RECTANGLE] = replaceAll(item.parameter[RECTANGLE], " ", "");
+            std::next(this->deque.begin(), std::stoi(item.parameter[RECTANGLE]) - 1)->parameter[RECTANGLE] = item.parameter[RECTANGLE];
+            item.parameter[RECTANGLE] = default_parameter.at(RECTANGLE);
+        }
+
     }
 }
 
-int Generator::fileAppend(char *filename, std::string lineContent){
-    std::cout << lineContent << std::endl;
-    return 0;
+int Generator::fileAppend(const char *filename, std::string lineContent, std::string mode){
     FILE *fp;
 
-    if ((fp = fopen(filename, "a")) == NULL){
+    if ((fp = fopen(filename, mode.c_str())) == NULL){
         std::cerr << "无法打开" << filename << "文件" << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -184,13 +186,13 @@ int Generator::generator(){
                         //行生成
                         lineContent = this->getLineContent(subline->queue, numcolumn);
                         //更新map值(表，非key->value)
-                        this->updateUse_Value(lineContent, std::distance(deque.begin(), line) + 1);
+                        this->updateUse_Value(lineContent, std::distance(deque.begin(), subline) + 1);
                         this->fileAppend(filename, lineContent);
                     }
                 }
-                //修正偏移量
-                line = std::next(line, step - 1);
             }
+            //修正偏移量
+            line = std::next(line, step - 1);
         }
     }
 }
@@ -277,7 +279,7 @@ void Generator::updateUse_Value(std::string lineContent, int line){
 
 #if __TEST__ != 0
     for (int i = 0; i < 6; i++){
-        for (int j = 0; j < 16; j++)
+        for (int j = 0; j < 10; j++)
             std::cout << this->use_value[i][j] << " ";
         std::cout << std::endl;
     }
