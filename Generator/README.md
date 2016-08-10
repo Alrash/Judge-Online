@@ -57,7 +57,7 @@ ip地址
 ![ip地址](https://raw.githubusercontent.com/Alrash/OnlineJudge/master/data/images/Part02-Generator_example.png)
 <br><p align="center">ip地址多行生成</p>
 
-生成矩阵:
+生成矩阵:<br>
 ![矩阵](https://github.com/Alrash/OnlineJudge/blob/master/data/images/Part02-Generator_example02.png)
 <br><p align="center">重复产生矩阵</p>
 
