@@ -5,7 +5,7 @@
 Alrash
 
 ##许可证
-**GPL v3.0**
+**GPL v2.0**
 
 ##依赖
 平台: linux(centos 6.6) *别吐槽为什么是这个版本*<br>
