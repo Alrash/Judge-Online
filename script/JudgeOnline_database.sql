@@ -4,7 +4,7 @@
  */
 
 create user 'JudgeOnline' identified by 'judgement';
-grant all on JudgeOnline.* to 'JudgeOnline'@'localhost' identified by 'judgement';
+grant all on JudgeOnline.* to 'JudgeOnline'@'127.0.0.1' identified by 'judgement';
 
 create database `JudgeOnline`;
 
@@ -79,15 +79,17 @@ create table `UserStatistics`
  * time -- 以C为标准的限制时间，例：1.00s
  * memory -- 同样以C为标准的内存限制，例：254M
  * note -- 存放原题、原作者信息(url or author)
+ * Type -- 题目类型，0 大题 1 填空题
  * label -- 问题符合的标签，例：BSF
  */
-create table `ProblemInfo`
+create table `QuestionInfo`
 (
     `PId`         int           unsigned not null auto_increment,
     `Title`       nvarchar(31)  not null,
     `Time`        char(5)       not null,
     `Memory`      char(5)       not null,
     `Hard`        int           not null default 3,
+    `Type`        int           not null default 0,
     `TestNumber`  int           not null default 10,
     `Note`        varchar(51)   not null,
     `Label1`      nvarchar(21)  null,
@@ -96,24 +98,26 @@ create table `ProblemInfo`
     `Label4`      nvarchar(21)  null,
     `Label5`      nvarchar(21)  null,
     primary key (`PId`),
-    check (`Hard` >= 1 and `Hard` <= 5)
+    check (`Hard` >= 1 and `Hard` <= 5),
+    check (`Type` >= 0 and `Type` <= 1)
 );
 
 /*
  * right 与 wrong，仅是计数使用
  */
-create table `ProblemStatistics`
+create table `QuestionStatistics`
 (
     `PId`         int           unsigned not null,
     `Right`       bigint        unsigned default 0,
     `Wrong`       bigint        unsigned default 0,
-    foreign key (`PId`) references ProblemInfo(`PId`) on delete cascade
+    foreign key (`PId`) references QuestionInfo(`PId`) on delete cascade
 );
 
 /*
  * sid -- submission id 提交id
  * UId -- user id 是userinfo的外键
- * PId -- problem id 是ProblemInfo的外键
+ * PId -- problem id 是QuestionInfo的外键
+ * timestamp -- 时间戳
  * goal -- 得分
  * check 约束goal，但是在mysql中无用→_→
  */
@@ -123,9 +127,11 @@ create table `Submission`
     `UId`         bigint        unsigned not null,
     `PId`         int           unsigned not null,
     `goal`        decimal(5,2)  not null default 0,
+    `timestamp`   timestamp(6)  not null,
+    `compiler`    varchar(10)   not null default "c",
     primary key (`SId`),
     foreign key (`UId`) references UserInfo(`UId`),
-    foreign key (`PId`) references ProblemInfo(`PId`),
+    foreign key (`PId`) references QuestionInfo(`PId`),
     check (`goal` >= 0 and `goal` <= 100)
 );
 
@@ -136,7 +142,7 @@ create table `Submission`
  * tpid -- 上传题目时，近取max + 1
  * 具体题目与样例存放在TPID的文件夹下
  */
-create table `TempProblem`
+create table `TempQuestion`
 (
     `TPId`        int           unsigned not null,
     `Visited`     tinyint       not null default -1,
@@ -144,6 +150,7 @@ create table `TempProblem`
     `Time`        char(5)       not null,
     `Memory`      char(5)       not null,
     `Hard`        int           not null default 3,
+    `Type`        int           not null default 0,
     `TestNumber`  int           not null default 10,
     `Note`        varchar(51)   not null,
     `Label1`      nvarchar(21)  null,
@@ -152,14 +159,15 @@ create table `TempProblem`
     `Label4`      nvarchar(21)  null,
     `Label5`      nvarchar(21)  null,
     primary key (`TPId`),
-    check (`Hard` >= 1 and `Hard` <= 5)
+    check (`Hard` >= 1 and `Hard` <= 5),
+    check (`Type` >= 0 and `Type` <= 1)
 );
 
 /*
  * 触发器设置
  * 需要以下几个：
  * UserInfo 插入、删除时，对UserStatistics的操作
- * ProblemInfo 插入、删除时，对ProblemStatistics的操作
+ * QuestionInfo 插入、删除时，对QuestionStatistics的操作
  * submission check约束goal
  * UserInfo 约束UId = 1的超级管理员，不能删，Trust不能改，其余Trust在0～10之间
  */
@@ -222,34 +230,38 @@ end$$
 /*
  * 添加一条题目时，将PId自动插入问题状态表（初始化）
  */
-create trigger `Problem_Insert_Tri` after insert on `ProblemInfo`
+create trigger `Question_Insert_Tri` after insert on `QuestionInfo`
 for each row
 begin
     if ((new.`Hard` < 1) or (new.`Hard` > 5))
     then
-        update `ProblemInfo` set `Hard` = 3 where `PId` = new.`PId`;
+        update `QuestionInfo` set `Hard` = 3 where `PId` = new.`PId`;
+    end if;
+    if ((new.`Type` < 0) or (new.`Type` > 1))
+    then
+        update `QuestionInfo` set `Type` = 0 where `PId` = new.`PId`;
     end if;
 
-    insert into ProblemStatistics (`PId`) values(new.`PId`);
+    insert into QuestionStatistics (`PId`) values(new.`PId`);
 end$$
 
 /*
  * 删除某个问题时，先删除其状态表中的内容
  */
-create trigger `Problem_Delete_Tri` before delete on `ProblemInfo`
+create trigger `Question_Delete_Tri` before delete on `QuestionInfo`
 for each row
 begin
-    delete from `ProblemStatistics` where `ProblemStatistics`.`PId` = old.`PId`;
+    delete from `QuestionStatistics` where `QuestionStatistics`.`PId` = old.`PId`;
 end$$
 
 /* *
  * 因为后写，使用两个而不是一个，请看下一条注释
  * 目的：防止Hard值越界
- * 为什么TempProblem表不使用？
- *     1. ProblemInfo表的内容是从TempProblem表中插入的，insert规则可防止错误的发生
+ * 为什么TempQuestion表不使用？
+ *     1. QuestionInfo表的内容是从TempQuestion表中插入的，insert规则可防止错误的发生
  *     2. 懒Σ( ° △ °||| )︴！！！！！！！
  */
-create trigger `ProblemInfo_Check_Insert_Tri` before insert on `ProblemInfo`
+create trigger `QuestionInfo_Check_Insert_Tri` before insert on `QuestionInfo`
 for each row
 begin
     if ((new.`Hard` > 5) or (new.`Hard` < 1))
@@ -257,7 +269,7 @@ begin
         set new.`Hard` = 3;
     end if;
 end$$
-create trigger `ProblemInfo_Check_Update_Tri` before update on `ProblemInfo`
+create trigger `QuestionInfo_Check_Update_Tri` before update on `QuestionInfo`
 for each row
 begin
     if ((new.`Hard` > 5) or (new.`Hard` < 1))
@@ -314,8 +326,9 @@ as
 create view `Submission_View`
 as 
     select
-        `Submission`.`SId`, `Submission`.`PId`, `Submission`.`UId`, 
-        `UserInfo`.`Nickname`, `ProblemInfo`.`Title`, `Submission`.`goal`
+        `Submission`.`SId`, `Submission`.`PId`, `Submission`.`UId`,
+        `Submission`.`compiler`, `Submission`.`timestamp`,
+        `UserInfo`.`Nickname`, `QuestionInfo`.`Title`, `Submission`.`goal`
     from `UserInfo` inner join
-         `ProblemInfo` inner join
-         `Submission` on `ProblemInfo`.`PId` = `Submission`.`PId` and `UserInfo`.`UId` = `Submission`.`UId`;
+         `QuestionInfo` inner join
+         `Submission` on `QuestionInfo`.`PId` = `Submission`.`PId` and `UserInfo`.`UId` = `Submission`.`UId`;
