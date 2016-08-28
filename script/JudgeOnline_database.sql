@@ -335,7 +335,19 @@ as
         `Submission`.`SId`, `Submission`.`PId`, `Submission`.`UId`,
         `Submission`.`compiler`, `Submission`.`timestamp`,
         `UserInfo`.`Nickname`, `QuestionInfo`.`Title`, `Submission`.`goal`,
-        `Submission`.`Runtime`, `Submission.Runmemory`, `Submission`.`Status`
+        `Submission`.`Runtime`, `Submission.Runmemory`,
+        (CASE `Submission`.`Status`
+            WHEN 0 THEN 'testing'
+            WHEN 1 THEN 'AC'
+            WHEN 2 THEN 'WA'
+            WHEN 3 THEN 'PE'
+            WHEN 4 THEN 'RE'
+            WHEN 5 THEN 'TLE'
+            WHEN 6 THEN 'MLE'
+            WHEN 7 THEN 'OLE'
+            WHEN 8 THEN 'CE'
+            ELSE 'Others'
+        END) AS `Status`,
     from `UserInfo` inner join
          `QuestionInfo` inner join
          `Submission` on `QuestionInfo`.`PId` = `Submission`.`PId` and `UserInfo`.`UId` = `Submission`.`UId`;
