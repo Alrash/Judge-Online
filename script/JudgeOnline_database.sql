@@ -127,8 +127,10 @@ create table `Submission`
     `UId`         bigint        unsigned not null,
     `PId`         int           unsigned not null,
     `goal`        decimal(5,2)  not null default 0,
-    `timestamp`   timestamp(6)  not null,
+    `timestamp`   timestamp(6)  not null default current_timestamp(),
     `compiler`    varchar(10)   not null default "c",
+    `Runtime`     int           unsigned not null default 0,
+    `Runmemory`   int           unsigned not null default 0,
     primary key (`SId`),
     foreign key (`UId`) references UserInfo(`UId`),
     foreign key (`PId`) references QuestionInfo(`PId`),
@@ -328,7 +330,8 @@ as
     select
         `Submission`.`SId`, `Submission`.`PId`, `Submission`.`UId`,
         `Submission`.`compiler`, `Submission`.`timestamp`,
-        `UserInfo`.`Nickname`, `QuestionInfo`.`Title`, `Submission`.`goal`
+        `UserInfo`.`Nickname`, `QuestionInfo`.`Title`, `Submission`.`goal`,
+        `Submission`.`Runtime`, `Submission.Runmemory`
     from `UserInfo` inner join
          `QuestionInfo` inner join
          `Submission` on `QuestionInfo`.`PId` = `Submission`.`PId` and `UserInfo`.`UId` = `Submission`.`UId`;
