@@ -119,6 +119,9 @@ create table `QuestionStatistics`
  * PId -- problem id 是QuestionInfo的外键
  * timestamp -- 时间戳
  * goal -- 得分
+ * Runtime -- 实际运行时间(ms)
+ * Runmemory -- 实际运行内存大小(B)
+ * Status -- 是否测试，0未测试，其余已测试(可映射为8大状态)
  * check 约束goal，但是在mysql中无用→_→
  */
 create table `Submission`
@@ -131,6 +134,7 @@ create table `Submission`
     `compiler`    varchar(10)   not null default "c",
     `Runtime`     int           unsigned not null default 0,
     `Runmemory`   int           unsigned not null default 0,
+    `Status`      tinyint       not null default 0,
     primary key (`SId`),
     foreign key (`UId`) references UserInfo(`UId`),
     foreign key (`PId`) references QuestionInfo(`PId`),
@@ -331,7 +335,7 @@ as
         `Submission`.`SId`, `Submission`.`PId`, `Submission`.`UId`,
         `Submission`.`compiler`, `Submission`.`timestamp`,
         `UserInfo`.`Nickname`, `QuestionInfo`.`Title`, `Submission`.`goal`,
-        `Submission`.`Runtime`, `Submission.Runmemory`
+        `Submission`.`Runtime`, `Submission.Runmemory`, `Submission`.`Status`
     from `UserInfo` inner join
          `QuestionInfo` inner join
          `Submission` on `QuestionInfo`.`PId` = `Submission`.`PId` and `UserInfo`.`UId` = `Submission`.`UId`;
