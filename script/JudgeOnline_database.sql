@@ -88,8 +88,8 @@ create table `QuestionInfo`
 (
     `PId`         int           unsigned not null auto_increment,
     `Title`       nvarchar(31)  not null,
-    `Time`        char(5)       not null,
-    `Memory`      char(5)       not null,
+    `Time`        int           unsigned not null,
+    `Memory`      int           unsigned not null,
     `Hard`        int           not null default 3,
     `Type`        int           not null default 0,
     `TestNumber`  int           not null default 10,
