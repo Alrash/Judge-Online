@@ -1,5 +1,5 @@
 #!/bin/sh
-mkdir bin
+mkdir -p bin
 make
 
 mv judged/judged bin/
