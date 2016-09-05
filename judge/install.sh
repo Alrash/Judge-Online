@@ -1,10 +1,8 @@
 #!/bin/sh
-
-mkdir -p bin
-
+mkdir bin
 make
 
-mv compiler/compiler bin
-mv executor/executor bin
-mv judged/judged bin
-mv judge/judge judgeAppend
+mv judged/judged bin/
+mv judge/judge bin/
+mv executor/executor bin/
+mv compiler/compiler bin/

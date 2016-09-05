@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <regex>
 
 std::vector<std::string> split(const std::string &str, const std::string &pattern){
     //存放结果
@@ -21,7 +22,8 @@ std::vector<std::string> split(const std::string &str, const std::string &patter
             result.push_back(str.substr(i, pos - i));
             i = pos + pattern.size() - 1;
         }else{
-            result.push_back(str.substr(i));
+            if (i < size)
+                result.push_back(str.substr(i));
             break;
         }
     }
@@ -30,7 +32,7 @@ std::vector<std::string> split(const std::string &str, const std::string &patter
 }
 
 //替换所有substr所指字符串
-std::string replaceAll(const std::string &str, const std::string &substr, const std::string repstr){
+std::string replaceAll(const std::string &str, const std::string &substr, const std::string &repstr){
     std::string result = str;
     int len = substr.size(), pos;
 
@@ -39,4 +41,23 @@ std::string replaceAll(const std::string &str, const std::string &substr, const 
     }
     
     return result;
+}
+
+/* *
+ * 检测字符串是否为非0开头的纯数字
+ */
+bool is_numeric(std::string value){
+    return std::regex_match(value, std::regex("^[1-9]\\d*$"));
+}
+
+/* *
+ * 检查vector中是否含有字符串str
+ */
+bool is_find_in_vector(std::vector<std::string> vt, std::string str){
+    for (auto item : vt){
+        if (item.compare(str) == 0){
+            return true;
+        }
+    }
+    return false;
 }

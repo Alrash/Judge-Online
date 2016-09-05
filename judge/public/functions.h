@@ -31,6 +31,25 @@ std::vector<std::string> split(const std::string &str, const std::string &patter
  * @return:
  *      返回已经替换好的字符串
  */
-std::string replaceAll(const std::string &str, const std::string &substr, const std::string repstr);
+std::string replaceAll(const std::string &str, const std::string &substr, const std::string &repstr);
+
+/* *
+ * 检测字符串是否为非0开头的纯数字
+ * @param:
+ *      value -- 待检测的字符串
+ * @return:
+ *      false/true
+ */
+bool is_numeric(std::string value);
+
+/* *
+ * 检查字符串是否在向量vt中
+ * @param:
+ *      vt -- 向量组
+ *      str -- 待检测的字符串
+ * @return:
+ *      false/true
+ */
+bool is_find_in_vector(std::vector<std::string> vt, std::string str);
 
 #endif

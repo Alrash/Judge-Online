@@ -8,32 +8,57 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
+#include <vector>
+#include <map>
 #include <string>
 
-//带编译文件的根目录
-//暂时手动设置绝对路径
-//Submit目录下设置内容：check -- 测试文件夹
-//                      d*（提交号）-- 存放提交文件，以及一些编译输出文件（如：警告、错误提示、分值结果）
-//const std::string root = "/www/DATA/Submit";
-const std::string root = "/home/alrash/Desktop/judge";
-const int MB = 1024 * 1024;						//1M
-const int max_outfile_size = MB;				//1M
-
-//测试结果常量字符串
-const int ANSWER_AC = 0;
-const int ANSWER_WA = 1;
-const int ANSWER_PE = 2;
-const int ANSWER_RE = 3;
-const int ANSWER_TLE = 4;
-const int ANSWER_MLE = 5;
-const int ANSWER_OLE = 6;
-const int ANSWER_CE = 7;
-const int ANSWER_OTHERS = 100;
-
+/* *
+ * judge使用参数，具体信息参见judge.cpp main函数注释
+ */
+const std::vector<std::string> parameter = {
+    "-s", "-p", "-u", "-l", "-c", "-t", "-m", "-h"
+};
 //管道中固定字串长度
-const int PIPE_LEN = 256;
+const int PIPE_LENGTH = 512;
 //管道中用于填充与切割的字符
 const char fillch = '@';
 const char splitch = ';';
+
+const int COMPILER_ERROR = 1;
+const int INIT_ERROR = 11;
+const int MB = 1024 * 1024;
+const int max_outfile_size = MB;				//1M
+
+//测试结果常量字符串
+const int TESTING = 0;
+const int ANSWER_AC = 1;
+const int ANSWER_WA = 2;
+const int ANSWER_PE = 3;
+const int ANSWER_RE = 4;
+const int ANSWER_TLE = 5;
+const int ANSWER_MLE = 6;
+const int ANSWER_OLE = 7;
+const int ANSWER_CE = 8;
+const int ANSWER_OTHERS = 9;
+
+const std::map<std::string, std::string> answer_map = {
+    {std::to_string(TESTING), "testing"},
+    {std::to_string(ANSWER_AC), "AC"},
+    {std::to_string(ANSWER_WA), "WA"},
+    {std::to_string(ANSWER_PE), "PE"},
+    {std::to_string(ANSWER_RE), "RE"},
+    {std::to_string(ANSWER_TLE), "TLE"},
+    {std::to_string(ANSWER_MLE), "MLE"},
+    {std::to_string(ANSWER_OLE), "OLE"},
+    {std::to_string(ANSWER_CE), "CE"},
+    {std::to_string(ANSWER_OTHERS), "others"},
+};
+
+//数据库使用
+const char HOST[] = "127.0.0.1";
+const char USERNAME[] = "JudgeOnline";
+const char PASSWORD[] = "judgement";
+const char DATABASE[] = "JudgeOnline";
+const int PORT = 3306;
 
 #endif
