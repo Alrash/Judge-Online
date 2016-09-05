@@ -1,0 +1,22 @@
+<root>
+    <Element>
+        <choice>C</choice>
+        <compiler>C99: gcc -Wall -lm -O2 -o Main Main.c</compiler>
+    </Element>
+    <Element>
+        <choice>C++</choice>
+        <compiler>C++: g++ -Wall -lm -O2 -o Main Main.cpp</compiler>
+    </Element>
+    <Element>
+        <choice>C++11</choice>
+        <compiler>C++11: g++ -Wall -lm -O2 -std=c++11 -o Main Main.cpp</compiler>
+    </Element>
+    <Element>
+        <choice>Java</choice>
+        <compiler>Java: Javac Main.java</compiler>
+    </Element>
+    <Element>
+        <choice>Python3.5</choice>
+        <compiler>Python3.5: no compiler</compiler>
+    </Element>
+</root>

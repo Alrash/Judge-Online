@@ -95,7 +95,7 @@ $(document).ready(function() {
                     document.getElementById("NickErr").innerHTML = "数据库连接错误，请联系管理员";
             }
         });
-        $("#refresh").load("/log/register #hidden", null);
+        $("#refresh").load("/login/register #hidden", null);
 
         //设置输入文本，取出首尾空格
         $("#nickname_reg").val(nickname);
@@ -144,7 +144,7 @@ $(document).ready(function() {
                     document.getElementById("NickErr").innerHTML = "数据库连接错误，请联系管理员";
             }
         });
-        $("#refresh").load("/log/register #hidden", null);
+        $("#refresh").load("/login/register #hidden", null);
     });
     
     //防止有一部分空格的情况
@@ -199,7 +199,7 @@ $(document).ready(function() {
            });
 
            //刷新隐藏域，获得真正的值
-           $("#refresh").load("/log/signIn #hidden", null);
+           $("#refresh").load("/login/signIn #hidden", null);
        }
     });
 
@@ -291,8 +291,7 @@ $(document).ready(function() {
                 success:function (response) {
                     if (response == "fail")
                         document.getElementById("NickErr").innerHTML = "注册失败，请重试";
-                    else
-                    {
+                    else {
                         //去除error和beforeSend出现的提示信息
                         document.getElementById("NickErr").innerHTML = "";
 

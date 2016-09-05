@@ -1,10 +1,8 @@
 <?php
-if (true)
-    require_once STATIC_PATH . 'language/zh_CN/language.php';
-else
-    require_once STATIC_PATH . 'language/en/language.php';
+    $languagePath = isset($_COOKIE['LANG']) ? $_COOKIE['LANG'] : getSystemLanguage();
+    require_once STATIC_PATH . "language/$languagePath/language.php";
 ?>
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
     <?php

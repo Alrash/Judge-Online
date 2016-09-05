@@ -86,7 +86,7 @@ class AboutController extends Controller
 
         //接受提交的信息增加至xml文件中
         //如果为游客提交，则id为0
-        if(isset($_POST['suggest']))
+        if(isset($_POST['suggest']) && $_POST['suggest'] != '')
         {
             $suggest = $_POST['suggest'];
             $id = isset($_SESSION['UId']) ? $_SESSION['UId'] : 0 ;
@@ -94,7 +94,7 @@ class AboutController extends Controller
         }
 
         //获得UId值作为索引的数组，便于下面的函数替换
-        $needData = $operation->getIdInfo(array('`UId`', '`Nickname`', '`Image`', '`Exp`', '`Trust`'),
+        $needData = $operation->getIdInfo(array('`UId`', '`Nickname`', '`Image`', '`Exp`'),
                         '`User_View`', $this->getSuggestSelectWhere($operation->getXmlElement()));
         $this->set('data', $this->dealSuggestArray($operation->getXmlElement(), $needData));
     }
@@ -106,6 +106,6 @@ class AboutController extends Controller
     function __destruct()
     {
         // TODO: Implement __destruct() method.
-        $this->_view->specialRenderAbout();
+        $this->_view->specialRenderWithControllerName('about');
     }
 }

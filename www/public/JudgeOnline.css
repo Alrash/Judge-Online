@@ -1,4 +1,8 @@
 /***************全局*********************/
+html{
+    height: 100%;
+}
+
 input:focus
 {
     background-color: #e0e0e0;
@@ -7,22 +11,160 @@ input:focus
 body{
     margin: 0;
     min-width: 1300px;
+    -webkit-user-select: none;
+    user-select: none;
+    -moz-user-select: none;
 }
+
+.inputError{
+    border:1px solid red;
+}
+
+.star{
+    color: #ffd500;
+    text-shadow: 1px 1px 1px #000;
+    font-size: 110%;
+}
+
+.choice .star{
+    font-size: 250%;
+    text-shadow: 1px 1px 1px #000;
+    cursor: pointer;
+}
+
+.filter{
+    padding: 1% 10%;
+    text-align: center;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.codeArea{
+    background-color: lavender;
+    width: 80%;
+}
+
+.codeArea .code{
+    user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+}
+
+.codeArea .code li{
+    border-left: 2px solid green;
+    line-height: 1.2em;
+    padding-left: 4px;
+    font-size: 0.8em;
+}
+
+.codeArea .code .code01{
+    background-color: #f8f8f8;
+}
+
+.codeArea .code .code02{
+    background-color: #fff;
+}
+
+.codeArea .code pre{
+    padding: 0 0;
+    margin: 0 0;
+}
+
+.filter input[type=checkbox]:checked{
+}
+
+.pageList{
+    position: relative;
+}
+
+.pageList ul{
+    list-style-type: none;
+    padding: 0;
+}
+
+.pageList ul li, .pageList ul span{
+    text-align: center;
+    padding: 0 4px;
+    min-width: 36px;
+    font-size: 15px;
+    min-height: 25px;
+    line-height: 25px;
+    background: rgba(0, 0, 0, .05);
+    display: inline-block;
+    border-radius: 12.5px;
+}
+
+.pageList ul li:hover{
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.pageList ul li a{
+    display: block;
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.6);
+}
+ .pageList ul span{
+     background: rgba(0, 0, 0, 0.35);
+     color: #fff;
+     cursor: default;
+ }
+
+ .pageList .skip{
+     position: absolute;
+     width: 50%;
+     top: 0;
+     left: 50%;
+     line-height: 25px;
+ }
+
+ .pageList .skip *{
+     float: right;
+     font-size: 15px;
+ }
+
+ .background{
+     width: 100%;
+     background-color: #dceffe;
+     padding-top: 4px;
+     padding-bottom: 6px;
+     margin: 2% 0;
+ }
+
+ .background .centerArea{
+     width: 70%;
+     background-color: white;
+     margin: 0 auto;
+     border: 1px solid #ddd;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+     padding: 2% 5%;
+ }
 
 /**************UserMenu**************/
 .usermenu{
     z-index: 1000;
     height: 40px;
+    position: relative;
+}
+
+.usermenu .left{
+    position: absolute;
+    line-height: 40px;
+    margin: 0 2%;
+}
+
+.usermenu .left a{
+    font-size: 80%;
 }
 
 .usermenu #info{
-    /*position: absolute;
+    /*float: right;
     margin-left: 50%;
     text-align: center;*/
+    padding-left: 5%;
     display: block;
-    width: 20%;
-    margin-right: 10%;
-    float: right;
+    width: 35%;
+    margin-left: 10%;
+    left: 50%;
+    position: absolute;
 }
 
 .usermenu ul{
@@ -32,17 +174,18 @@ body{
     width: 100%;
     margin: 0 auto;
     padding: 0 0;
+    line-height: 40px;
 }
 
 .usermenu li{
     display: inline-block;
     position: relative;
-    padding: 10px 4px;
+    padding: 0 4px;
 }
 
 .usermenu li#split{
     font-size: 24px;
-    padding: 8px 0 0;
+    padding: 0 0;
 }
 
 .usermenu #info .login #img{
@@ -115,12 +258,12 @@ body{
     margin: 0 10px;
     position: relative;
     float: left;
-    left: 15%;
+    left: 10%;
 }
 
 .usermenu #info .login #leftmenu li {
     float: left;
-    margin: 4px 2px;
+    margin: 0 2px;
 }
 
 .usermenu #info .login{
@@ -154,7 +297,7 @@ body{
 
 /**************顶层菜单栏底色****************/
 .usermenu_background {
-    height: 40px;
+    height: 38px;
     background: #BFBABA;
     box-shadow: 0 0 0 2px;
     overflow: hidden;
@@ -170,22 +313,29 @@ body{
 /**************header****************/
 .header{
     height: 100px;
+    width: 100%;
     text-align: center;
-    background: transparent url("./images/logo.png") no-repeat;
 }
 
-.header a/*:link, .header a:hover, .header a:visited*/ {
+.header .backgroundImage{
+    width: 1240px;
+    height: 100px;
+    background: transparent url("./images/logo.png") no-repeat;
+    margin: 0 auto;
+}
+
+.header .backgroundImage a/*:link, .header a:hover, .header a:visited*/ {
     display: block;
     height: 100px;
     width: 568px;
     position: relative;
-    left: 7%;
+    left: 3%;
 /*    background: transparent url("./images/logo.png") 20px 600px no-repeat;*/
 }
 
 /**************navigation******************/
 div.navigation{
-    height: 3em;
+    /*height: 3em;*/
     position: static;
     margin: 0 8% 6px;
     text-align: center;
@@ -362,9 +512,29 @@ body.index #Index, body.browse #Browse, body.recommend #Recommend, body.data #Da
     margin: 5% 28%;
 }
 
+.search .dropMenu{
+    width: 44%;
+    position: absolute;
+}
+
+.search .dropMenu #listSearch{
+    width: 70%;
+    padding-left: 32px;
+    margin-top: 0;
+    list-style-type: none;
+    box-shadow: rgba(0, 0, 0, 0.16) 0 2px 4px;
+    max-height: 14em;
+    overflow: auto;
+}
+
+.search .dropMenu #listSearch li{
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+}
+
 #search{
     width: 70%;
-    height: 36px;
+    height: 30px;
     padding-left: 30px;
     font-size: 20px;
     background-color: white;
@@ -388,7 +558,7 @@ body.index #Index, body.browse #Browse, body.recommend #Recommend, body.data #Da
 
 /****************About******************/
 .about{
-    padding: 4px 2%;
+    padding: 4px 2% 4px 1%;
     background-color: beige;
     min-height: 470px;
     display: block;
@@ -397,7 +567,7 @@ body.index #Index, body.browse #Browse, body.recommend #Recommend, body.data #Da
 .about .left_area{
     display: inline-block;
     padding: 8px 0 8px 2px;
-    width: 8%;
+    width: 9%;
     position: fixed;
     border-top: 2px solid lightgray;
     border-bottom: 2px solid lightgray;
@@ -406,7 +576,7 @@ body.index #Index, body.browse #Browse, body.recommend #Recommend, body.data #Da
 .about .left_area ul{
     list-style-type: none;
     margin: 0 auto;
-    padding: 0 2%;
+    padding-left: 4%;
 }
 
 .about .left_area ul li{
@@ -415,6 +585,8 @@ body.index #Index, body.browse #Browse, body.recommend #Recommend, body.data #Da
 
 .about .left_area ul li a{
     text-decoration: none;
+    font-size: 0.9em;
+    left:1%;
 }
 
 .about .right_area{
@@ -425,7 +597,7 @@ body.index #Index, body.browse #Browse, body.recommend #Recommend, body.data #Da
     padding: 1em 1em;
     border-left: 2px solid #A2B5CD;
     min-height: 442px;
-    left: 10%;
+    left: 11%;
 }
 
 .about .right_area #suggest textarea{
@@ -436,4 +608,573 @@ body.index #Index, body.browse #Browse, body.recommend #Recommend, body.data #Da
 .about .right_area #suggest input{
 /*    font-size: 1.2em;*/
     width: 6em;
+}
+
+.about .right_area #showSuggest {
+    display: block;
+}
+
+.about .right_area #showSuggest .styleSuggest {
+    padding: 0.2em 0.4em;
+}
+
+.about .right_area #showSuggest .styleSuggest .styleSuggestLeft{
+    display: inline-block;
+    padding: 0.2em 0.4em;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.about .right_area #showSuggest .styleSuggest .styleSuggestLeft img{
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+    /*    -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;*/
+    border: 3px solid #ffffff;
+}
+
+.about .right_area #showSuggest .styleSuggest .styleSuggestRight{
+    display: inline-block;
+    position: absolute;
+    border-left: 2px solid snow;
+    min-height: 100px;
+    padding-left: 1em;
+}
+
+.about .right_area #showSuggest .styleSuggest a{
+    float: right;
+    font-size: 0.8em;
+    text-decoration: none;
+    display: block;
+    background-color: azure;
+}
+
+/******************Information*********************/
+#information{
+    width: 100%;
+    background-color: #dceffe;
+    padding-bottom: 0.2em;
+}
+
+#information #infoArea{
+    margin: 0 auto;
+    min-width: 1100px;
+    width: 76em;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,.14);
+}
+
+#information #infoArea .left_area{
+    display: inline-block;
+    width: 10em;
+    position: absolute;
+}
+
+#information #infoArea .left_area ul{
+    list-style-type: none;
+    padding: 0 0;
+    margin: 0 auto;
+}
+
+#information #infoArea .left_area ul span{
+    line-height: 2em;
+    display: block;
+    font-size: 1.2em;
+    text-align: center;
+    color: #B5B5B5;
+    border-bottom: 1px solid #dddddd;
+    cursor: default;
+}
+
+#information #infoArea .left_area ul li{
+    height: 2em;
+    padding: 0.2em 0;
+    margin: auto 0;
+}
+
+#information #infoArea .left_area ul li#clicked{
+    background-color: #00A1D7;
+}
+#information #infoArea .left_area ul li#clicked a{
+    color: white;
+}
+
+#information #infoArea .left_area ul li:hover{
+    background-color: #e8e8e8;
+}
+
+#information #infoArea .left_area ul li a{
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    color: #222222;
+    line-height: 2em;
+}
+
+#information #infoArea .right_area{
+    display: inline-block;
+    width: 66em;
+    border-left: 1px solid #ddd;
+    margin-left: 10em;
+    min-height: 300px;
+}
+
+#information #infoArea .right_area #siteTitle{
+    line-height: 2em;
+    font-size: 1.2em;
+    padding-left: 3em;
+    border-bottom: 1px solid #dddddd;
+}
+
+#information #infoArea .right_area #siteTitle #squareArea{
+    line-height: 2em;
+    border-radius: 25%;
+    background-color: #00A1D7;
+    color: #00A1D7;
+    font-size: 1em;
+}
+
+#information #infoArea .right_area #siteTitle #infoText{
+    color: #00A1D7;
+    font-size: 1em;
+    margin-left: 0.2em;
+}
+
+#information #infoArea .right_area #realArea div{
+    padding-left: 1.5em;
+}
+
+#information #infoArea .right_area #realArea div.choice{
+    height: 1em;
+    line-height: 1em;
+    margin-top: -0.5em;
+    background-color: white;
+    position: absolute;
+    /*padding: 0 0.2em;*/
+    padding: 0 0;
+}
+
+#information #infoArea .right_area ul{
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+#information #infoArea .right_area li{
+    line-height: 2em;
+    margin: 0.5em auto;
+}
+
+#information #infoArea .right_area li span, #information #infoArea .right_area #realArea span{
+    width: 6em;
+    margin-right: 2em;
+    text-align: right;
+    display: inline-block;
+    font-size: 0.8em;
+}
+
+#information #infoArea .right_area li input{
+    height: 1.5em;
+    padding: 0.2em 0.5em;
+}
+
+#information #infoArea .right_area li textarea{
+    padding: 0.2em 0.5em;
+    resize: none;
+    margin-left: 8em;
+}
+
+#information #infoArea .right_area .settingAhref{
+    line-height: 3em;
+    text-align: center;
+    padding-right: 16em;
+}
+
+#information #infoArea .right_area .settingAhref a{
+    display: inline-block;
+    width: 8em;
+    height: 2em;
+    line-height: 2em;
+    background-color: #00A1D7;
+    border-radius: 3px;
+    letter-spacing: 0.5em;
+    color: white;
+}
+
+#information #infoArea .right_area .settingAhref a:hover{
+    cursor: pointer;
+}
+
+#information #infoArea .right_area #Avatar{
+    display: inline-block;
+    position: absolute;
+}
+
+/***********************Problem****************************/
+#Question{
+    margin-top: 1em;
+    min-height: 580px;
+}
+
+#Question #questionAreaLeft{
+    display: inline-block;
+    width: 10%/*8em*/;
+    float: left;
+    margin: 1em 0.5em;
+}
+
+#Question #questionAreaLeft a{
+    text-decoration: none;
+    display: block;
+    margin: 0.5em;
+    padding-left:0.5em;
+}
+
+#Question #questionAreaRight{
+    display: inline-block;
+    border-left: 1px solid #222222;
+    margin-top: 1em;
+    max-width: 85%;
+    padding-left: 1.5em;
+    width: 100%;
+}
+
+#Question #questionAreaRight .combination{
+    width: 84%;
+    top: 46px;
+    position: absolute;
+}
+
+#Question #questionAreaRight .combination div{
+    float: right;
+}
+
+#Question #questionAreaRight .combination div a{
+    text-decoration: none;
+    display: inline-block;
+    min-width: 6em;
+    text-align: center;
+    cursor: pointer;
+    color: black;
+}
+
+#Question #questionAreaRight .pid{
+    -webkit-user-select: text;
+    user-select: text;
+    -moz-user-select: text;
+    background: #A2B5CD;
+    padding: 0.6em 0.2em;
+    border-style: ridge;
+    min-height: 540px;
+}
+
+#Question #questionAreaRight .pid .pTitle p{
+    text-align:center;
+    margin: 0 auto;
+    font-weight: bold;
+    font-size: 1.6em;
+}
+
+#Question #questionAreaRight .pid .pInfo ul, #Question #questionAreaRight .pid .pLabel ul{
+    margin: 1.5em 10% auto;
+    list-style-type: none;
+    line-height: 1.5em;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+#Question #questionAreaRight .pid .pInfo ul li{
+    display: inline-block;
+    width: 33%
+}
+
+#Question #questionAreaRight .pid .pLabel ul{
+    margin: 0.5em 10%;
+}
+
+#Question #questionAreaRight .pid .pLabel ul li{
+    display: inline-block;
+    padding: 0 2%;
+}
+
+#Question #questionAreaRight .pid .pContent p{
+    background: #e8e8e8;
+    padding: 1em 0.5em;
+    margin: 0.8em auto;
+    border-style: groove;
+}
+
+#Question #questionAreaRight .pid .pNote{
+    background: #e0e0e0;
+    line-height: 2em;
+    font-size: 0.8em;
+    padding-left: 1.5em;
+}
+
+/**question中的弹窗**/
+#Question #questionAreaRight .submission{
+    display: none;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+    height: 70%;
+    background: #fff;
+    z-index: 10;
+}
+
+#Question #questionAreaRight .submission div{
+    width: 100%;
+}
+
+#Question #questionAreaRight .submission .close{
+    left: 35px;
+    font-size: 30px;
+    color: #fff;
+    position: absolute;
+}
+
+#Question #questionAreaRight .submission .close span{
+    line-height: 30px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    float: right;
+    cursor: pointer;
+}
+
+#Question #questionAreaRight .submission .sTitle{
+    position: absolute;
+    text-align: center;
+    font-size: x-large;
+    margin: 0.2em;
+}
+
+#Question #questionAreaRight .submission .sPid{
+    font-size: larger;
+    margin: 0.2em 0.5em;
+}
+
+#Question #questionAreaRight .submission .sPid input{
+    font-size: 1.1em;
+    width: 15%;
+    margin: 0.2em auto;
+    padding: 0.2em 0.2em;
+}
+
+.error{
+    color: red;
+    font-size: small;
+    padding: 1em;
+}
+
+#Question #questionAreaRight .submission .sCompiler ul{
+    list-style-type: none;
+    width: 95%;
+    margin: 1em auto 0;
+    padding-left: 0;
+    background: #000;
+    overflow: hidden;
+    border: 1px solid #000;
+    border-bottom: 0px;
+}
+
+.current{
+    background: cornflowerblue;
+}
+
+#Question #questionAreaRight .submission .sCompiler ul li{
+    width: 12%;
+    font-size: small;
+    text-align: center;
+    float:left;
+    padding: 0.2em 2%;
+    color: #fff;
+    line-height: 1.6em;
+    cursor: pointer;
+}
+
+#Question #questionAreaRight .submission .sCompiler .show{
+    width: 95%;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #000;
+    line-height: 1.8em;
+    font-size: 0.8em;
+}
+
+#Question #questionAreaRight .submission .sCompiler .hide{
+    display: none;
+}
+
+#Question #questionAreaRight .submission .sCompiler p{
+    margin: 0;
+    padding: 0 0.4em;
+    -webkit-user-select: text;
+    user-select: text;
+    -moz-user-select: text;
+}
+
+#Question #questionAreaRight .submission .code{
+    margin: 0.5em auto;
+    width: 95%;
+    height: 68%;
+}
+
+#Question #questionAreaRight .submission .code textarea{
+    padding: 1% 0 0 1%;
+    width: 99%;
+    height: 99%;
+    resize: none;
+    margin: 0;
+}
+
+#Question #questionAreaRight .submission .code input{
+    width: 95%;
+    margin: 0.2em 0;
+    font-size: 1em;
+    padding: 0.2em 0.4em;
+}
+
+#Question #questionAreaRight .submission .button{
+    margin-top: 0.8em;
+}
+
+#Question #questionAreaRight .submission .button a{
+    display: block;
+    width: 6em;
+    background: darkgray;
+    color: #fff;
+    border-radius: 5%;
+    margin: 0 auto;
+    line-height: 1.6em;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#Question #questionAreaRight .submission .button a:active{
+    background: blue;
+}
+
+#Question #questionAreaRight .overlay{
+    display: none;
+    position: fixed;
+    top: 40px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0,.8);
+}
+
+.datalist{
+    min-height: 450px;
+}
+
+.datalist .dataArea{
+    width: 90%;
+    margin: auto;
+}
+
+.datalist #tableList{
+    border-spacing: 0;
+}
+
+.datalist #tableList .columnTitle{
+    background: #ccc;
+    line-height: 120%;
+    font-size: 90%;
+    font-weight: bold;
+}
+
+.datalist #tableList .cell02{
+    background: #eaeaea;
+}
+
+.datalist #tableList .cell01{
+    background: white;
+}
+
+.datalist #tableList .debug{
+    width: 30px;
+    height: 24px;
+    line-height: 24px;
+    position: relative;
+}
+
+.datalist #tableList .debug i{
+    background: url("./images/base-function.png") no-repeat -105px 0px;
+    top: 2px;
+    height: 24px;
+    width: 24px;
+    position: absolute;
+}
+
+.datalist #tableList .title{
+    width: 50%;
+}
+
+.datalist #tableList a{
+    text-decoration: none;
+    color: #000;
+}
+
+.datalist #tableList a:hover{
+    text-decoration: underline;
+}
+
+.datalist #tableList .nickname{
+    width: 40%;
+    text-align: center;
+}
+
+.datalist #tableList .type{
+    width: 10em;
+}
+
+.datalist #tableList .count{
+    width: 5em;
+    text-align: right;
+}
+
+.datalist #tableList .per{
+    width: 20%;
+}
+
+.datalist #tableList .per .backgroundTable{
+    background: #f00;
+    line-height: 1em;
+    position: relative;
+}
+
+.datalist #tableList .per .backgroundTable .right{
+    background: #0f0;
+    color: transparent;
+    height: 100%;
+}
+
+.datalist #tableList .per .backgroundTable .showText{
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    font-size: 0.8em;
+}
+
+.datalist #tableList .hard{
+    text-align: center;
+    min-width: 3em;
+}
+
+.datalist #tableList .submission, .datalist #tableList .detail, .datalist #tableList .status, .datalist #tableList .question{
+    width: 15%;
+    padding-left: 1%;
 }

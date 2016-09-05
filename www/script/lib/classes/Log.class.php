@@ -29,7 +29,7 @@ class Log
     public function outToErrorLog()
     {
         $log = $this->time . " Error: " . $this->err;
-        error_log($log, 3, ERROR_LOG_ROOT . "/error.log");
+        error_log($log, 3, ERROR_LOG_ROOT . "/error.login");
     }
 
     public function setMessage($mesg)
@@ -40,6 +40,6 @@ class Log
     public function outToLog()
     {
         $log = $this->time . " : " . $this->message;
-        error_log($log, 3, EXEC_LOG_ROOT . "/exec.log");
+        error_log($log, 3, EXEC_LOG_ROOT . "/exec.login");
     }
 }

@@ -16,6 +16,8 @@ class Controller {
         $this->_controller = $controller;
         $this->_action = $action;
         $this->_view = new View($controller, $action);
+        $this->set('LOGO', true);
+        $this->set('MENU', true);
     }
  
     function set($name, $value) {

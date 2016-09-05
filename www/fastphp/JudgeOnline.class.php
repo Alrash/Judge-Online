@@ -57,9 +57,9 @@ class JudgeOnline implements DataBase
     //连接数据库，若连接异常，则抛出异常
     protected function connect()
     {
-        /*$log = new Log();
-        $log->setMessage("be ready to connect " . $this->databasename . " used by " . $this->username);
-        $log->outToLog();*/
+        /*$login = new Log();
+        $login->setMessage("be ready to connect " . $this->databasename . " used by " . $this->username);
+        $login->outToLog();*/
         $this->mysql = new mysqli($this->host, $this->username, $this->passwd, $this->databasename);
 
         if (mysqli_connect_errno())

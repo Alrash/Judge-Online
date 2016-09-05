@@ -3,6 +3,9 @@
 ?>
 <div class="usermenu">
     <!--UserMenu-->
+    <div class="left">
+        <a href="/index"><?php echo $usermenu['index']?></a>
+    </div>
     <div id="info">
         <?php
         if (isset($_SESSION['signIn']) && $_SESSION['signIn'])
@@ -14,7 +17,7 @@
             <ul>
                 <div id="img">
                     <ul id="i_face">
-                        <a href="#">
+                        <a href="/site">
                             <img id="usual" src="<?php echo $_SESSION['Image'];?>"/>
                         </a>
                     </ul>
@@ -34,10 +37,13 @@
                 </div>
                 <div id="leftmenu">
                     <li>
-                        <a href="#"><?php echo $usermenu['submit']?></a>
+                        <a href="/question/quickSearch"><?php echo $usermenu['submit']?></a>
                     </li>
                     <li>
-                        <a href="#"><?php echo $usermenu['recommend']?></a>
+                        <a href="/question/recommend"><?php echo $usermenu['recommend']?></a>
+                    </li>
+                    <li>
+                        <a href="/history/user"><?php echo $usermenu['history']?></a>
                     </li>
                     <li>
                         <a href="#"><?php echo $usermenu['out']?></a>
@@ -55,11 +61,11 @@
         <div class="logout" style="display: <?php echo $dis_logout;?>">
             <ul>
                 <li>
-                    <a href="/log/signIn"><?php echo $usermenu['lanch']?></a>
+                    <a href="/login/signIn"><?php echo $usermenu['launch']?></a>
                 </li>
                 <li id="split">|</li>
                 <li>
-                    <a href="/log/register"><?php echo $usermenu['reg']?></a>
+                    <a href="/login/register"><?php echo $usermenu['reg']?></a>
                 </li>
             </ul>
         </div>
@@ -70,11 +76,21 @@
     <div class="usermenu_background"></div>
 </div>
 
+<?php
+if ($LOGO) {
+?>
 <div class="header">
+    <div class="backgroundImage">
     <!--Header-->
     <a href="/index" title="<?php echo $menu['Index']; ?>" style="float:left;"></a>
+    </div>
 </div>
-
+<?php
+}
+?>
+<?php
+if ($MENU) {
+?>
 <div class="navigation">
     <!--Navigation-->
     <ul>
@@ -82,7 +98,7 @@
             <a href="/index"><?php echo $menu['Index']; ?></a>
         </li>
         <li id="Browse">
-            <a href="#"><?php echo $menu['Browse']; ?></a>
+            <a href="/question"><?php echo $menu['Browse']; ?></a>
         </li>
         <li id="Recommend">
             <a href="#"><?php echo $menu['Recommend']; ?></a>
@@ -95,3 +111,6 @@
         </li>
     </ul>
 </div>
+<?php
+}
+?>

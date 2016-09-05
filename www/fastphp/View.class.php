@@ -51,13 +51,13 @@ class View {
         include (APP_PATH . 'application/views/' . lcfirst($this->_controller) . '/' . $this->_action . '.php');
     }
     
-    function specialRenderAbout()
+    function specialRenderWithControllerName($controllerName)
     {
         extract($this->variables);
         include APP_PATH . 'application/views/header.php';
-        include APP_PATH . 'application/views/about/header.php';
-        include APP_PATH . 'application/views/about/' . $this->_action . '.php';
-        include APP_PATH . 'application/views/about/footer.php';
+        include APP_PATH . 'application/views/' . $controllerName . '/header.php';
+        include APP_PATH . 'application/views/' . $controllerName . '/' . $this->_action . '.php';
+        include APP_PATH . 'application/views/' . $controllerName . '/footer.php';
         include APP_PATH . 'application/views/footer.php';
     }
  

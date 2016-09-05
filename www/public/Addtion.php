@@ -12,7 +12,6 @@ echo '<meta name="author" content="Alrash">';
 echo '<!--<link href="favicon_32*32.ico" rel="icon">-->';
 
 //jquery解析库
-echo '<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>-->';
 echo '<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>';
 
 //js ase加密脚本
