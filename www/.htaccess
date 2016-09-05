@@ -1,17 +1,26 @@
-#ÕâÀïÊÇnginx×¨ÓÃµÄÖØ¶¨ÏòÎÄ¼ş
+#è¿™é‡Œæ˜¯nginxä¸“ç”¨çš„é‡å®šå‘æ–‡ä»¶
 # nginx rewrite rule
-    ##Èç¹ûÇëÇó/*.phpÎÄ¼ş£¬×ªÏò²»´æÔÚµÄÎÄ¼ş£¬ÕâÀïÎªÁË·½±ãÊ¹ÓÃ404
+    ##å¦‚æœè¯·æ±‚/*.phpæ–‡ä»¶ï¼Œè½¬å‘ä¸å­˜åœ¨çš„æ–‡ä»¶ï¼Œè¿™é‡Œä¸ºäº†æ–¹ä¾¿ä½¿ç”¨404
     rewrite ^/(.*)\.php$    404 break;
-    ##Í¼±êÎÄ¼ş
+    ##å›¾æ ‡æ–‡ä»¶
     rewrite ^/favicon.ico$  /public/favicon_32*32.ico break;
-    ##cssÎÄ¼şÖØ¶¨Ïò
+    ##cssæ–‡ä»¶é‡å®šå‘
     rewrite ^/css/(.*)$     /public/$1 break;
-    ##javascriptÎÄ¼şÖØ¶¨Ïò
+    ##javascriptæ–‡ä»¶é‡å®šå‘
     rewrite ^/js/(.*)$      /script/js/$1 break;
-    ##jpg png gifµÈÍ¼Æ¬ÎÄ¼şÖØ¶¨Ïò
+    ##jpg png gifç­‰å›¾ç‰‡æ–‡ä»¶é‡å®šå‘
     rewrite ^/img/(.*)$     /public/images/$1 break;
-    ##ÓÃ»§×Ô¶¨ÒåÍ·ÏñÎÄ¼şÖØ¶¨Ïò(UId/Í·ÏñÃû.ºó×º)
-    rewrite ^/images/(.*)$  /DATA/$1 break;
-    ##ÆäÓàÎÄ¼şÖØ¶¨Ïò
+    ##ç”¨æˆ·è‡ªå®šä¹‰å¤´åƒæ–‡ä»¶é‡å®šå‘(åŸä¸ºç”¨æˆ·UId/æ–‡ä»¶å.pngï¼Œç°ä¸ºtime()+ç”¨æˆ·åçš„æ•£åˆ—å€¼)
+    rewrite ^/avatar/(.*)$  /DATA/Avatar/$1 break;
+    ##ä¿¡æ¯å¤„ç†é‡å®šå‘(InfoControlleræ¨¡å—)
+    rewrite ^/info/(.*)$    /index.php?url=info/info/$1 break;
+    ##å›¾åƒç”Ÿæˆæ¨¡å—é‡å®šå‘(ImageControlleræ¨¡å—)
+    rewrite ^/image/(.*)$    /index.php?url=image/image/$1 break;
+    ##
+    rewrite ^/file/(.*)$  /index.php?url=file/file/$1 break;
+    ##ä¸ªäººä¿¡æ¯ä¸“ç”¨çš„é‡å®šå‘ï¼Œå› ä¸ºä¸æƒ³å†å¼€ä¸€ä¸ªæ§åˆ¶å™¨ï¼ˆéœ€é‡è½½__destructï¼‰ï¼Œäºæ˜¯ç›´æ¥åœ¨loginä¸­ä½¿ç”¨
+    ##å…·ä½“è§login/site
+    rewrite ^/site(/([^/]*))?$    /index.php?url=login/site$1 break;
+    ##å…¶ä½™æ–‡ä»¶é‡å®šå‘
     rewrite ^/(.*)$         /index.php?url=$1 break;
 # end nginx rewrite rule
