@@ -65,8 +65,10 @@ create table `UserStatistics`
     `MLE`         int	        unsigned default 0,
     `OLE`         int	        unsigned default 0,
     `CE`          int	        unsigned default 0,
+    `others`      int           unsigned default 0,
     `C`           int	        unsigned default 0,
     `C++`         int	        unsigned default 0,
+    `C++11`       int	        unsigned default 0,
     `Java`        int	        unsigned default 0,
     `Python`      int	        unsigned default 0,
     foreign key (`UId`) references UserInfo(`UId`) on delete cascade
@@ -80,7 +82,7 @@ create table `UserStatistics`
  * memory -- 同样以C为标准的内存限制，例：254M
  * note -- 存放原题、原作者信息(url or author)
  * Type -- 题目类型，0 大题 1 填空题
- * label -- 问题符合的标签，例：BSF
+ * label -- 问题符合的标签，例：BSF(;分割)
  */
 create table `QuestionInfo`
 (
@@ -92,11 +94,7 @@ create table `QuestionInfo`
     `Type`        int           not null default 0,
     `TestNumber`  int           not null default 10,
     `Note`        varchar(51)   not null,
-    `Label1`      nvarchar(21)  null,
-    `Label2`      nvarchar(21)  null,
-    `Label3`      nvarchar(21)  null,
-    `Label4`      nvarchar(21)  null,
-    `Label5`      nvarchar(21)  null,
+    `Label`       nvarchar(101) null,
     primary key (`PId`),
     check (`Hard` >= 1 and `Hard` <= 5),
     check (`Type` >= 0 and `Type` <= 1)
@@ -114,7 +112,7 @@ create table `QuestionStatistics`
 );
 
 /*
- * sid -- submission id 提交id
+ * SId -- submission id 提交id
  * UId -- user id 是userinfo的外键
  * PId -- problem id 是QuestionInfo的外键
  * timestamp -- 时间戳
@@ -159,11 +157,7 @@ create table `TempQuestion`
     `Type`        int           not null default 0,
     `TestNumber`  int           not null default 10,
     `Note`        varchar(51)   not null,
-    `Label1`      nvarchar(21)  null,
-    `Label2`      nvarchar(21)  null,
-    `Label3`      nvarchar(21)  null,
-    `Label4`      nvarchar(21)  null,
-    `Label5`      nvarchar(21)  null,
+    `Label`       nvarchar(101) null,
     primary key (`TPId`),
     check (`Hard` >= 1 and `Hard` <= 5),
     check (`Type` >= 0 and `Type` <= 1)
@@ -206,8 +200,8 @@ begin
     if old.`UId` = 1
     then
         set msg = "禁止删除超级管理员用户!\nForbid deleting the super user!";
-        signal SQLSTATE 'HY000' set message_text = msg;     #version >= 5.5
-        #update nullTable set err = msg;                    #version < 5.5
+        #signal SQLSTATE 'HY000' set message_text = msg;     #version >= 5.5
+        update nullTable set err = msg;                    #version < 5.5
     end if;
 
     delete from `UserStatistics` where `UserStatistics`.`UId` = old.`UId`;
@@ -323,10 +317,29 @@ as
         `UserInfo`.`UId`, `UserInfo`.`Nickname`, `UserInfo`.`Email`,
         `UserInfo`.`Image`, `UserInfo`.`Note`, `UserInfo`.`Trust`,
         `UserStatistics`.`Exp`, `UserStatistics`.`AC` as `Right`,
-        `UserStatistics`.`AC` + `UserStatistics`.`WA` +`UserStatistics`.`PE` +`UserStatistics`.`RE` +`UserStatistics`.`TLE` +`UserStatistics`.`MLE` +`UserStatistics`.`OLE` +`UserStatistics`.`CE` as `Total`, 
-        `UserStatistics`.`C`, `UserStatistics`.`C++`, `UserStatistics`.`Java`, `UserStatistics`.`Python` 
+        (`UserStatistics`.`AC` + `UserStatistics`.`WA` +`UserStatistics`.`PE` +`UserStatistics`.`RE` +`UserStatistics`.`TLE` +`UserStatistics`.`MLE` +`UserStatistics`.`OLE` +`UserStatistics`.`CE`) as `Total`, 
+        `UserStatistics`.`C`, `UserStatistics`.`C++`, `UserStatistics`.`C++11`,
+        `UserStatistics`.`Java`, `UserStatistics`.`Python` 
     from `UserInfo` inner join  `UserStatistics`
          on `UserInfo`.`UId` = `UserStatistics`.`UId`;
+
+/**问题*/
+create view `Question_View`
+as
+    select 
+        `QuestionInfo`.`PId`, `QuestionInfo`.`Title`,.`QuestionInfo`.`Time`,
+        `QuestionInfo`.`Memory`, `QuestionInfo`.`Hard`, `QuestionInfo`.`Type`,
+        `QuestionInfo`.`TestNumber`, `QuestionInfo`.`Note`, `QuestionInfo`.`Label`,
+        (`QuestionStatistics`.`Wrong` + `QuestionStatistics`.`Right`) AS `Total`,
+        ROUND(((`QuestionStatistics`.`Right` * 100) / (`QuestionStatistics`.`Wrong` + `QuestionStatistics`.`Right`)), 2) AS `Per`,
+        (CASE
+            WHEN (`JudgeOnline`.`QuestionInfo`.`Type` = 1) THEN '填空题' ELSE '综合题'
+        END) AS `Type_CN`,
+        (CASE
+            WHEN (`JudgeOnline`.`QuestionInfo`.`Type` = 1) THEN 'filled' ELSE 'fixed'
+        END) AS `Type_EN`
+    from `QuestionInfo` join `QuestionStatistics`
+        where `QuestionInfo`.`PId` = `QuestionStatistics`.`PId`;
 
 /*提交信息视图*/
 create view `Submission_View`
@@ -335,7 +348,7 @@ as
         `Submission`.`SId`, `Submission`.`PId`, `Submission`.`UId`,
         `Submission`.`compiler`, `Submission`.`timestamp`,
         `UserInfo`.`Nickname`, `QuestionInfo`.`Title`, `Submission`.`goal`,
-        `Submission`.`Runtime`, `Submission.Runmemory`,
+        `Submission`.`Runtime`, `Submission`.`Runmemory`,
         (CASE `Submission`.`Status`
             WHEN 0 THEN 'testing'
             WHEN 1 THEN 'AC'
@@ -346,8 +359,8 @@ as
             WHEN 6 THEN 'MLE'
             WHEN 7 THEN 'OLE'
             WHEN 8 THEN 'CE'
-            ELSE 'Others'
-        END) AS `Status`,
+            ELSE 'others'
+        END) AS `Status`
     from `UserInfo` inner join
          `QuestionInfo` inner join
          `Submission` on `QuestionInfo`.`PId` = `Submission`.`PId` and `UserInfo`.`UId` = `Submission`.`UId`;
