@@ -198,6 +198,15 @@ int executor(){
     }
 
     if (pid == 0){
+	    auto vt = split(parameter_map["executor"], " ");
+	    char **argv = (char **)malloc((vt.size() + 1) * sizeof(char *));
+	    char (*ss)[1025] = new char[vt.size() + 1][1025];
+	    for (int i = 0; i < vt.size(); i++){
+	        strcpy(ss[i], vt[i].c_str());
+	        argv[i] = ss[i];
+	    }
+	    argv[vt.size()] = (char *)0;
+
         if (reopen() == -1){
             //原reopen函数，含有一些限制，现已去除，所以用不到这里
 	        if (!parameter_map["error_path"].empty()){
@@ -210,13 +219,16 @@ int executor(){
         }
         setlimits();        
         ptrace(PTRACE_TRACEME, 0, NULL, NULL);
-        execl(parameter_map["path"].c_str(), parameter_map["executor"].c_str(), NULL);
+        //execl(parameter_map["path"].c_str(), parameter_map["executor"].c_str(), NULL);
+        execv(parameter_map["path"].c_str(), argv);
 
         //不造什么原因，调用失败
 	    if (!parameter_map["error_path"].empty()){
 	        Log log = Log(parameter_map["error_path"].c_str());
             log.append("call execl function error", std::string(parameter_map["sid"] + " call executor function").c_str());
         }
+        free(argv);
+        delete[] ss;
 
         exit(-1);
 
