@@ -3,6 +3,7 @@
 
 #一些设置
 set GLOBAL time_zone = '+8:00';
+set GLOBAL event_scheduler=ON;
 
 #创建用户，分配权限
 
@@ -23,17 +24,23 @@ create table `tb_user_info`(
     `email`         varchar(40)     not null comment '联络邮箱',
     `exp`           int	            unsigned not null default 0 comment '经验值',
     `avatar`        varchar(100)    not null default '/img/default_avatar.png' comment '用户头像 存放伪路径',
-    `introduction`  nvarchar(200)   null comment '用户简介 可空',
+    `introduction`  text   null comment '用户简介 可空',
     `registerDate`  date            not null default current_timestamp comment '注册时间',
-    `verification`  varchar(300)    null comment '验证信息',
+    `verification`  text    null comment '验证信息',
     primary key (`uid`),
     unique index `userinfo_nickname_unique` (`nickname` asc),
     unique index `userinfo_email_unique` (`email` asc)
 ) ENGINE = InnoDB comment '用户基本信息表';
 
+/**
+ * 不用uuid当主键，参见
+ */
 create table `tb_user_login`(
+    `id`            int             unsigned not null auto_increment,
+    `uuid`          char(36)        not null comment '唯一id',
     `uid`           int             unsigned not null,
-    `uuid`          varchar(100)    not null,
+    `ctime`         datetime        not null default current_timestamp comment '该条uuid创建时间',
+    primary key (`id`),
     foreign key (`uid`) references `tb_user_info`(`uid`) on delete cascade
 ) ENGINE = InnoDB comment '用户登录表';
 
@@ -54,15 +61,11 @@ create table `tb_role`(
  */
 create table `tb_privilege`(
     `rid`           int             unsigned not null,
-    `auth`          tinyint         unsigned not null default 0 comment '该用户是否可以更改权限/也是进入后台的标识',
-    `wiki`          tinyint         unsigned not null default 1 comment 'wiki页所拥有的权限',
-    `question`      tinyint         unsigned not null default 1 comment 'question功能区所拥有的权限',
-    `commits`       tinyint         unsigned not null default 7 comment '用户评论区所拥有的权限',
-    foreign key (`rid`) references `tb_role`(`rid`) on delete cascade,
-    check (`auth` = 0 or `auth` = 1),
-    check (`wiki` >= 0 and `wiki` <= 7),
-    check (`question` >= 0 and `question` <= 7),
-    check (`commits` >= 0 and `commits` <= 7)
+    `auth`          binary (1)        not null default 0 comment '该用户是否可以更改权限/也是进入后台的标识',
+    `wiki`          binary(3)         not null default 1 comment 'wiki页所拥有的权限',
+    `question`      binary(3)         not null default 1 comment 'question功能区所拥有的权限',
+    `commits`       binary(3)         not null default 7 comment '用户评论区所拥有的权限',
+    foreign key (`rid`) references `tb_role`(`rid`) on delete cascade
 ) ENGINE = InnoDB comment '角色授权表';
 
 create table `tb_user_role`(
@@ -76,9 +79,8 @@ create table `tb_user_blacklist`(
     `uid`           int             unsigned not null,
     `datetime`      datetime        not null default current_timestamp comment '封禁时间',
     `lasttime`      int             unsigned not null default 60 comment '持续时间，默认单位分钟',
-    `loop`          tinyint         unsigned not null default 0 comment '永封',
-    foreign key (`uid`) references `tb_user_info`(`uid`) on delete cascade,
-    check (`loop` = 0 or `loop` = 1)
+    `loop`          binary(1)         not null default 0 comment '永封',
+    foreign key (`uid`) references `tb_user_info`(`uid`) on delete cascade
 ) ENGINE = InnoDB comment '用户黑名单';
 
 create table `tb_question_typo`(
@@ -94,19 +96,17 @@ create table `tb_question`(
     `memory`        int         unsigned not null default 256 comment '最大运行内存 单位mb 以c为标准',
     `level`         decimal(5, 3)  not null default 2.5 comment '难度等级',
     `qtid`          int             unsigned not null,
-    `outlimit`      tinyint         not null default 0 comment '输出格式限制 0不限制 1限制',
+    `outlimit`      binary(1)        not null default 0 comment '输出格式限制 0不限制 1限制',
     `num`           int             not null default 0 comment '测试文件数量',
     `uptime`        datetime        not null default current_timestamp comment '上传时间',
     `uid`           int             unsigned not null comment '创建者',
-    `original`      tinyint         not null default 1,
-    `author`        nvarchar(20)    null comment '作者名',
+    `original`      binary(1)         not null default 1,
+    `author`        nvarchar(30)    null comment '作者名',
     `link`          varchar(200)    null,
     `used`          tinyint         not null default -1 comment '表示该题目是否被使用 -1未使用 0已查看但是未使用 1使用 2隐藏',
     primary key (`qid`),
     foreign key (`qtid`) references `tb_question_typo`(`qtid`) on delete cascade,
-    check (`level` >= 0 and `level` <= 5),
-    check (`outlimit` = 0 or `outlimit` = 1),
-    check (`original` = 0 or `original` = 1)
+    check (`level` >= 0 and `level` <= 5)
 ) ENGINE = InnoDB comment '问题基本信息表';
 
 create table `tb_tag_info`(
@@ -149,10 +149,8 @@ create table `tb_paper_info`(
     `lasttime`      int             not null default -1 comment '考试时间 -1表示无时间限制',
     `count`         int             unsigned not null default 0,
     primary key (`pid`),
-    foreign key (`uid`) references `tb_user_info`(`uid`) on delete no action,
-    check (`pid` > 0)
+    foreign key (`uid`) references `tb_user_info`(`uid`) on delete no action
 )ENGINE = InnoDB comment '试卷基本信息表';
-alter table tb_paper_info auto_increment = 1;
 
 create table `tb_paper_define`(
     `id`            int             unsigned not null auto_increment,
@@ -189,14 +187,15 @@ create table `tb_submission`(
     `uptime`        datetime        not null default current_timestamp,
     `runtime`       tinyint         unsigned not null default 0 comment '实际运行时间 单位ms',
     `memory`        tinyint         unsigned not null default 0 comment '实际使用内存大小 单位kb',
-    `stauts`        tinyint         not null default 0 comment '当前状态 0表示等待测试',
+    `status`        tinyint         not null default 0 comment '当前状态 0表示等待测试',
     `compile_error` varchar(200)    null,
     primary key (`sid`),
     foreign key (`uid`) references `tb_user_info`(`uid`) on delete cascade,
     foreign key (`qid`) references `tb_question`(`qid`) on delete cascade,
     foreign key (`pid`) references `tb_paper_info`(`pid`) on delete cascade,
     foreign key (`lid`) references `tb_language`(`lid`) on delete cascade,
-    check (`stauts` >=0 and `stauts` <= 10)
+    check (`status` >=0 and `status` <= 10),
+    index `index_user`(`uid`, `status`)
 )ENGINE = InnoDB comment '问题提交表';
 
 create table `tb_wiki_folder`(
@@ -204,8 +203,7 @@ create table `tb_wiki_folder`(
     `wfname`        nvarchar(10)    not null,
     `pre_id`        int             unsigned not null default 0,
     primary key (`wfid`)
-) ENGINE = InnoDB comment 'wiki目录层次图';
-alter table tb_wiki_folder auto_increment = 1;
+) ENGINE = InnoDB auto_increment = 1 comment 'wiki目录层次图';
 
 create table `tb_wiki_info`(
     `wid`           int             unsigned not null auto_increment,
@@ -215,12 +213,11 @@ create table `tb_wiki_info`(
     `atime`         datetime        not null default current_timestamp comment '最后一次修改时间',
     `hash`          char(32)        not null,
     `pre_id`        int             unsigned not null default 0 comment '上层目录',
-    `original`      tinyint         not null default 1,
+    `original`     binary(1)         not null default 1,
     `author`        nvarchar(20)    null comment '作者名',
     `link`          varchar(200)    null comment '外连接',
     primary key (`wid`),
-    foreign key (`uid`) references `tb_user_info`(`uid`) on delete no action,
-    check (`original` = 0 or `original` = 1)
+    foreign key (`uid`) references `tb_user_info`(`uid`) on delete no action
 ) ENGINE = InnoDB comment 'wiki基本信息表';
 
 create table `tb_wiki_history`(
@@ -238,18 +235,21 @@ create table `tb_wiki_history`(
 create table `tb_notice`(
     `id`            int             unsigned not null auto_increment,
     `uid`           int             unsigned not null comment '发布者',
-    `ctime`          datetime        not null default current_timestamp comment '发布时间',
-    `content`       nvarchar(200)   not null,
+    `ctime`         datetime        not null default current_timestamp comment '发布时间',
+    `title`         nvarchar(50)    not null,
+    `content`       text   not null,
+    `weight`        tinyint         not null default 0 comment '权重',
     primary key (`id`),
-    foreign key (`uid`) references `tb_user_info`(`uid`) on delete no action
+    foreign key (`uid`) references `tb_user_info`(`uid`) on delete no action,
+    unique index `sort`(`weight`, `ctime`, `id`)
 ) ENGINE = InnoDB comment '系统公告';
 
 create table `tb_message`(
     `id`            int             unsigned not null auto_increment,
     `fuid`          int             unsigned not null comment '发送',
     `tuid`          int             unsigned not null comment '接收',
-    `ctime`          datetime        not null default current_timestamp comment '发布时间',
-    `content`       nvarchar(200)   not null,
+    `ctime`         datetime        not null default current_timestamp comment '发布时间',
+    `content`       text   not null,
     primary key (`id`),
     foreign key (`fuid`) references `tb_user_info`(`uid`) on delete no action,
     foreign key (`tuid`) references `tb_user_info`(`uid`) on delete no action
@@ -257,4 +257,110 @@ create table `tb_message`(
 
 /*******************************视图创建*******************************************/
 
+/**
+ * vw_notice 信息公告视图：
+ * 公告序列号(id)
+ * 创建者昵称(name)
+ * 公告标题(title)
+ * 公告内容(content)
+ * 创建时间(time, yyyy-mm-dd HH:MM)
+ * 公告权重(weight)
+ *
+ * 排序规则：
+ *     高权重在前，创建时间晚的在前，id逆向
+ */
+create view `vw_notice` as 
+    select
+        `tb_notice`.`id` as `id`, `tb_user_info`.`nickname` as `name`,
+        `tb_notice`.`title` as `title`, `tb_notice`.`content` as `content`,
+        DATE_FORMAT(`tb_notice`.`ctime`, '%Y-%m-%d %h:%i') as `time`, `tb_notice`.`weight` as `weight`
+        from `tb_notice` FORCE INDEX(`sort`) natural left outer join `tb_user_info`
+        ORDER BY `weight` desc, `tb_notice`.`ctime` desc, `id` desc;
+
+/* *
+ * 角色权限视图，用于查看所有角色权限
+ */
+create view `vw_role_privilege` as
+	select
+		`tb_role`.`name` as `name`, `tb_privilege`.`auth` as `auth`, 
+        `tb_privilege`.`question` as `question`, `tb_privilege`.`wiki` as `wiki`, 
+        `tb_privilege`.`commits` as `commits`
+		from `tb_role` natural join `tb_privilege`;
+    
+/* *
+ * 用户登录使用，左连接内部select可以简写
+ */
+create view `vw_user_login` as
+	select
+		`tb_user_info`.`uid` as `uid`, `tb_user_info`.`nickname` as `username`,
+        `tb_user_info`.`email` as `email`, `tb_user_info`.`password` as `password`,
+        `tb_user_info`.`exp` as `exp`, `tb_user_info`.`avatar` as `avatar`,
+        `tb_user_info`.`introduction` as `introduction`, `tb_user_info`.`verification` as `verification`,
+        `tb_user_info`.`registerDate` as `registerDate`, 
+        DATE_ADD(`tb_user_blacklist`.`datetime`, INTERVAL`tb_user_blacklist`.`lasttime` MINUTE) as `endtime` ,
+        `tb_user_blacklist`.`loop` as `loop`, `tb_user_login`.`uuid` as `uuid`, 
+        `tb_user_login`.`ctime` as `time`, `privilege`.`id` as `roleid`, `privilege`.`auth` as `auth`
+		from `tb_user_info` 
+			natural left join `tb_user_login`
+            natural left join `tb_user_blacklist`
+			left outer join (
+				select 
+					`tb_role`.`name` as `name`, `tb_privilege`.`auth` as `auth`, 
+					`tb_privilege`.`question` as `question`, `tb_privilege`.`wiki` as `wiki`, 
+					`tb_privilege`.`commits` as `commits`, `tb_user_role`.`rid` as `id`,
+                    `tb_user_role`.`uid` as `uid`
+					from `tb_role` 
+						natural join `tb_user_role` 
+                        natural join `tb_privilege`
+                ) as `privilege` on (`tb_user_login`.`uid` = `privilege`.`uid`);
+
+/* *
+ * 用户信息查询使用，左连接内部select可以简写
+ */            
+create view `vw_user_info` as
+	select
+		`tb_user_info`.`uid` as `uid`, `tb_user_info`.`nickname` as `username`,
+        `tb_user_info`.`email` as `email`, `tb_user_info`.`password` as `password`,
+        `tb_user_info`.`exp` as `exp`, `tb_user_info`.`avatar` as `avatar`,
+        `tb_user_info`.`introduction` as `introduction`,  `tb_user_info`.`registerDate` as `registerDate`, 
+        DATE_ADD(`tb_user_blacklist`.`datetime`, INTERVAL`tb_user_blacklist`.`lasttime` MINUTE) as `endtime` ,
+        `tb_user_blacklist`.`loop` as `loop`, `privilege`.`id` as `roleid`, `privilege`.`auth` as `auth`,
+        `privilege`.`name` as `rolename`, `submission`.`status` as `status`, `submission`.`status_statistics` as `ss`
+		from `tb_user_info` 
+            natural left join `tb_user_blacklist`
+			left outer join (
+				select 
+					`tb_role`.`name` as `name`, `tb_privilege`.`auth` as `auth`, 
+					`tb_privilege`.`question` as `question`, `tb_privilege`.`wiki` as `wiki`, 
+					`tb_privilege`.`commits` as `commits`, `tb_user_role`.`rid` as `id`,
+                    `tb_user_role`.`uid` as `uid`
+					from `tb_role` 
+						natural join `tb_user_role` 
+                        natural join `tb_privilege`
+                ) as `privilege` on (`tb_user_info`.`uid` = `privilege`.`uid`)
+			left outer join (
+                select 
+					`tb_submission`.`uid`, `tb_submission`.`status`, count(*) as `status_statistics`
+					from `tb_submission`
+                    group by `tb_submission`.`uid`, `tb_submission`.`status`
+                ) as `submission` on (`tb_user_info`.`uid` = `submission`.`uid`);
+
+/********************************创建定时器****************************************/
+delimiter @@
+create procedure delete_login_proce()
+begin
+	delete from `tb_user_login` 
+		where DATE_FORMAT(`ctime`, '%Y-%m-%d') <= (DATE_FORMAT(now(), '%Y-%m-%d') - 365);
+end@@
+delimiter ;
+
+/* *
+ * 创建删除uuid事件，调用delete_login_proce过程执行
+ */
+create event delete_login_event
+	on schedule every 1 day
+    on completion preserve enable
+    comment '删除uuid事件'
+    do call delete_login_proce();
+    
 /*****************************插入部分数据*****************************************/
